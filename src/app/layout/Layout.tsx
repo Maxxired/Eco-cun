@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import PWABadge from "../../pwa/PWABadge.tsx";
+import PWABadge from "../pwa/PWABadge";
 
 type LinkItem = { label: string; to: string };
 type LayoutProps = {
@@ -35,7 +35,7 @@ export default function Layout({
     };
 
     return (
-        <div className="min-h-dvh bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+        <div className="min-h-dvh bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-gray-100"> {/*aqui se cambia el color de fondo*/}
             {/* NAVBAR */}
             <nav className="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur dark:border-gray-800 dark:bg-gray-900/70">
                 <div className="mx-auto max-w-7xl h-14 px-4 sm:px-6 lg:px-8 flex items-center">
