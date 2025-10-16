@@ -1,5 +1,5 @@
 import type { RouteObject } from "react-router-dom";
-import Home from "../../features/Home/Home.tsx";
+import Home from "../pages/Home/Home";
 
 export const HomeRoutes: RouteObject[] = [
     {

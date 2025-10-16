@@ -1,8 +1,8 @@
 import React from "react";
 import { Navigate, RouteObject, useRoutes } from "react-router-dom";
-import NotResults from "../features/not-found/NotResults.tsx";
-import Layout from "./layout/Layout.tsx";
-import { HomeRoutes } from "./router/HomeRoutes.tsx";
+import NotResults from "../pages/not-found/NotResults.tsx";
+import { HomeRoutes } from "./HomeRoutes.tsx";
+import Layout from "../layout/Layout.tsx";
 
 const AppRoutes: React.FC = () => {
     const routes: RouteObject[] = [
