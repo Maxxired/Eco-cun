@@ -22,25 +22,25 @@ Incluye sistema de **rutas**, **tema claro/oscuro** y soporte **PWA (Progressive
 ---
 
 ## Estructura del proyecto
-
-.
-├── public/                 # Archivos públicos (favicon, manifest, etc.)
-├── src/                    # TODO el código de la aplicación
-│   ├── app/                # Lógica y estructura de la app (layout, router, páginas, etc.)
-│   │   ├── components/     # Componentes reutilizables (botones, tarjetas, etc.)
-│   │   ├── layout/         # Estructuras de interfaz, navbar, footer, etc.
-│   │   ├── pages/          # Cada carpeta aquí es una página o vista de la app
-│   │   ├── pwa/            # Archivos relacionados con la PWA (badge, estilos, registro)
-│   │   └── router/         # Rutas y subrutas de la aplicación
-│   ├── assets/             # Imágenes, íconos y recursos estáticos
-│   ├── index.css           # Estilos globales (Tailwind base + utilidades)
-│   ├── main.tsx            # Punto de entrada principal de React
-│   └── vite-env.d.ts       # Tipos de Vite (no modificar)
-├── index.html              # HTML base donde Vite inyecta la app
-├── vite.config.ts          # Configuración de Vite (plugins, alias, etc.)
-├── tsconfig*.json          # Configuración de TypeScript
-└── eslint.config.js        # Reglas de linting (formato y calidad del código)
-
+   ```bash
+    .
+    ├── public/                 # Archivos públicos (favicon, manifest, etc.)
+    ├── src/                    # TODO el código de la aplicación
+    │   ├── app/                # Lógica y estructura de la app (layout, router, páginas, etc.)
+    │   │   ├── components/     # Componentes reutilizables (botones, tarjetas, etc.)
+    │   │   ├── layout/         # Estructuras de interfaz, navbar, footer, etc.
+    │   │   ├── pages/          # Cada carpeta aquí es una página o vista de la app
+    │   │   ├── pwa/            # Archivos relacionados con la PWA (badge, estilos, registro)
+    │   │   └── router/         # Rutas y subrutas de la aplicación
+    │   ├── assets/             # Imágenes, íconos y recursos estáticos
+    │   ├── index.css           # Estilos globales (Tailwind base + utilidades)
+    │   ├── main.tsx            # Punto de entrada principal de React
+    │   └── vite-env.d.ts       # Tipos de Vite (no modificar)
+    ├── index.html              # HTML base donde Vite inyecta la app
+    ├── vite.config.ts          # Configuración de Vite (plugins, alias, etc.)
+    ├── tsconfig*.json          # Configuración de TypeScript
+    └── eslint.config.js        # Reglas de linting (formato y calidad del código)
+   ```
 ---
 
 ##  Explicación de carpetas
@@ -77,7 +77,7 @@ Elementos relacionados con la PWA:
 
 ---
 
-## 🗺️ Cómo funciona el enrutamiento
+##  Cómo funciona el enrutamiento
 
 index.html → main.tsx → Layout.tsx (navbar/footer)
                                ↓
@@ -87,7 +87,7 @@ Cada ruta carga una página desde src/app/pages/.
 
 ---
 
-## 🧩 Comentarios para entender el código
+## Comentarios para entender el código
 
 main.tsx
 - Punto de entrada de la app React.
@@ -116,7 +116,7 @@ PWABadge.tsx
 
 ---
 
-## ⚙️ Alias de importación @ (opcional)
+##  Alias de importación @ (opcional)
 
 Para importar más limpio (sin rutas largas):
 
