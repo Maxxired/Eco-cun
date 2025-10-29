@@ -12,7 +12,7 @@ type LayoutProps = {
 
 export default function Layout({}: LayoutProps) {
   return (
-    <div className="min-h-dvh bg-gray-50 text-gray-900 dark:bg-[#ffffff] dark:text-gray-100">
+    <div className="min-h-dvh bg-gray-50 text-gray-900 ">
       <nav className="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur dark:border-gray-800 dark:bg-gray-900/70">
         <NavBar></NavBar>
       </nav>
