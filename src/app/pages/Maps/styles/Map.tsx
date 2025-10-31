@@ -1,5 +1,5 @@
 import 'leaflet/dist/leaflet.css';
-import styles from './styles/Map.module.css'; // Importar estilos locales
+import styles from './Map.module.css'; // Importar estilos locales
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -10,7 +10,7 @@ import L from 'leaflet';
 // Coordenadas de Cancún [latitud, longitud]
 const cancunPosition: [number, number] = [21.1619, -86.8515];
 
-const MapView: React.FC = () => {
+const Map2: React.FC = () => {
   useEffect(() => {
     // Arreglo para el ícono del marcador (importante para Webpack/React)
     // Esto evita que se intente buscar una URL de ícono incorrecta.
@@ -42,5 +42,5 @@ const MapView: React.FC = () => {
   );
 };
 
-export default MapView;
+export default Map2;
 
