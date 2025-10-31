@@ -1,8 +1,3 @@
-
 export default function Home() {
-    return (
-        <div>
-zzzzcd
-        </div>
-    );
+  return <div>Ecocun</div>;
 }
