@@ -12,8 +12,6 @@ const cancunPosition: [number, number] = [21.1619, -86.8515];
 
 const MapView: React.FC = () => {
   useEffect(() => {
-    // Arreglo para el ícono del marcador (importante para Webpack/React)
-    // Esto evita que se intente buscar una URL de ícono incorrecta.
     delete (L.Icon.Default.prototype as any)._getIconUrl;
 
     L.Icon.Default.mergeOptions({
