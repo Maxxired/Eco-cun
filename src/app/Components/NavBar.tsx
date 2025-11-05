@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const NavBar = () => {
   return (
     <nav className="bg-[#228B4B] text-white px-2 py-5">
@@ -25,7 +23,7 @@ const NavBar = () => {
           </li>
           <li>
             <a
-              href="/"
+              href="/ecoaporta"
               className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
             >
               EcoAporta
