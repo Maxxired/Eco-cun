@@ -3,12 +3,12 @@ import Login from "../pages/Auth/LoginView";
 import Register from "../pages/Auth/RegisterView";
 
 export const AuthRoutes: RouteObject[] = [
-    {
-        path: "/login",
-        element: <Login />
-    },
-    {
-        path: "/register",
-        element: <Register />
-    },
-]
+  {
+    path: "/iniciar_sesion",
+    element: <Login />,
+  },
+  {
+    path: "/registro",
+    element: <Register />,
+  },
+];
