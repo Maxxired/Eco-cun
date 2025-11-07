@@ -1,12 +1,46 @@
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 const LoginWindow = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault(); // Evita recargar la página
+
+    const datosReporte = {
+      email,
+      password,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5093/api/Auth/logIn",
+        datosReporte
+      );
+      const { message, token } = response.data;
+
+      localStorage.setItem("token", token);
+
+      console.log("Login exitoso:", message);
+      console.log("Token recibido:", token);
+
+      navigate("/");
+      // Aquí podrías guardar el token en localStorage o redirigir al usuario
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-      {/* Logo */}
-      <img src="/logo_verde.png" alt="Ecocun Logo" className="h-50 mb-4" />
+      <img src="/logo_verde.png" alt="Ecocun Logo" className="h-24 mb-4" />
 
-      {/* Formulario */}
       <div className="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
-        <form className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label
               htmlFor="email"
@@ -18,6 +52,8 @@ const LoginWindow = () => {
               type="email"
               id="email"
               placeholder="ejemplo@ejemplo.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
             />
           </div>
@@ -32,6 +68,8 @@ const LoginWindow = () => {
             <input
               type="password"
               id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
             />
           </div>
@@ -40,7 +78,7 @@ const LoginWindow = () => {
             type="submit"
             className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors"
           >
-            Comenzar
+            <a>Comenzar</a>
           </button>
         </form>
 
@@ -50,6 +88,14 @@ const LoginWindow = () => {
             className="text-sm text-green-700 hover:underline"
           >
             ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+        <div className="mt-4 text-center">
+          <a
+            href="/registro"
+            className="text-sm text-green-700 hover:underline"
+          >
+            Registrate
           </a>
         </div>
       </div>
