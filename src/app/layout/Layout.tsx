@@ -1,17 +1,10 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import PWABadge from "../pwa/PWABadge";
 import "../Components/NavBar";
 import NavBar from "../Components/NavBar";
 import BottomNavBar from "../Components/BottomNavBar";
 
-type LinkItem = { label: string; to: string };
-type LayoutProps = {
-  title?: string;
-  links?: LinkItem[];
-  footerText?: string;
-};
-
-export default function Layout({}: LayoutProps) {
+export default function Layout( ) {
   return (
     <div className="min-h-dvh bg-gray-50 text-gray-900 ">
       <nav className="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur">
