@@ -2,10 +2,7 @@ const LoginWindow = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
       {/* Logo */}
-      <img src="/logo_verde.png" alt="Ecocun Logo" className="h-24 mb-4" />
-      <h1 className="text-3xl font-bold text-green-700 mb-6 tracking-wide">
-        ECOCUN
-      </h1>
+      <img src="/logo_verde.png" alt="Ecocun Logo" className="h-50 mb-4" />
 
       {/* Formulario */}
       <div className="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
@@ -55,15 +52,6 @@ const LoginWindow = () => {
             ¿Olvidaste tu contraseña?
           </a>
         </div>
-      </div>
-
-      {/* Icono inferior */}
-      <div className="mt-8">
-        <img
-          src="/icono_usuario.png"
-          alt="Usuario"
-          className="h-6 opacity-50"
-        />
       </div>
     </div>
   );
