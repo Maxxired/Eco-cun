@@ -1,17 +1,19 @@
-import "leaflet/dist/leaflet.css";
-import styles from "./styles/Map.module.css"; // Importar estilos locales
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+import 'leaflet/dist/leaflet.css';
+import styles from './Map.module.css'; // Importar estilos locales
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import React, { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 
 // Coordenadas de Cancún [latitud, longitud]
 const cancunPosition: [number, number] = [21.1619, -86.8515];
 
-const MapView: React.FC = () => {
+const Map2: React.FC = () => {
   useEffect(() => {
+    // Arreglo para el ícono del marcador (importante para Webpack/React)
+    // Esto evita que se intente buscar una URL de ícono incorrecta.
     delete (L.Icon.Default.prototype as any)._getIconUrl;
 
     L.Icon.Default.mergeOptions({
@@ -22,8 +24,8 @@ const MapView: React.FC = () => {
   }, []);
 
   return (
-    <MapContainer
-      center={cancunPosition}
+    <MapContainer 
+      center={cancunPosition} 
       zoom={13} // Un buen nivel de zoom para ver la ciudad
       className={styles.mapContainer} // Usar clase de CSS Modules
     >
@@ -32,10 +34,13 @@ const MapView: React.FC = () => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <Marker position={cancunPosition}>
-        <Popup>¡Saludos desde Cancún!</Popup>
+        <Popup>
+          ¡Saludos desde Cancún!
+        </Popup>
       </Marker>
     </MapContainer>
   );
 };
 
-export default MapView;
+export default Map2;
+

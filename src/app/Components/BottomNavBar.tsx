@@ -17,7 +17,7 @@ const BottomNavBar = () => {
           ></img>
         </a>
         <a
-          href="/mapa"
+          href="/Maps"
           className="hover:bg-green-800 px-3 py-2 rounded-md transition-colors"
         >
           <img src="mapa_icon.svg" alt="icono mapa" className="w-10"></img>
@@ -29,7 +29,7 @@ const BottomNavBar = () => {
           <img src="home_icon.svg" alt="icono home" className="w-10"></img>
         </a>
         <a
-          href="/campaigns"
+          href="/campaings"
           className="hover:bg-green-800 px-3 py-2 rounded-md transition-colors"
         >
           <img

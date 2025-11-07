@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const NavBar = () => {
   return (
     <nav className="bg-[#228B4B] text-white px-2 py-5">
@@ -14,36 +16,37 @@ const NavBar = () => {
           }`}
         >
           <li>
-            <a
-              href="/"
+            <Link
+              to="/"
               className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
             >
               Inicio
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="/ecoaporta"
+            <Link
+              to="/ecoaporta"
               className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
             >
               EcoAporta
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="/"
-              className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
+            <Link
+            to="/Maps"  
+          className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
             >
               Mapa
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="/"
+            <Link
+              to="/campaings"
+      
               className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
             >
               Campañas
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
