@@ -11,8 +11,9 @@ const AppRoutes: React.FC = () => {
     {
       path: "/",
       element: <Layout />,
-      children: [...HomeRoutes, ...AuthRoutes, ...FunctionRoutes],
+      children: [...HomeRoutes, ...FunctionRoutes],
     },
+    ...AuthRoutes,
     {
       path: "not-found",
       element: <NotResults />,

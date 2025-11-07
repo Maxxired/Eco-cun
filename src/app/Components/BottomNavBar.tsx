@@ -4,7 +4,7 @@ const BottomNavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#228B4B] text-white md:hidden z-50 shadow-md">
+    <nav className="fixed bottom-0 left-0 right-0 border-2 border-gray-200 bg-gray-100 text-white md:hidden z-50 shadow-md">
       <div className="flex justify-around items-center py-5 text-sm font-medium">
         <a
           href="/ecoaporta"
@@ -17,7 +17,7 @@ const BottomNavBar = () => {
           ></img>
         </a>
         <a
-          href="/mapa"
+          href="/Maps"
           className="hover:bg-green-800 px-3 py-2 rounded-md transition-colors"
         >
           <img src="mapa_icon.svg" alt="icono mapa" className="w-10"></img>
@@ -29,7 +29,7 @@ const BottomNavBar = () => {
           <img src="home_icon.svg" alt="icono home" className="w-10"></img>
         </a>
         <a
-          href="/campaigns"
+          href="/campaings"
           className="hover:bg-green-800 px-3 py-2 rounded-md transition-colors"
         >
           <img
@@ -90,7 +90,7 @@ const BottomNavBar = () => {
                 </a>
               </li>
               <li>
-                <a href="/cerrar" className="block hover:underline">
+                <a href="/iniciar_sesion" className="block hover:underline">
                   Cerrar sesión
                 </a>
               </li>

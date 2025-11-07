@@ -1,4 +1,5 @@
 import { useState } from "react";
+import UbicacionActual from "./CurrentLocation";
 
 function EcoaportaForm() {
   const [comentarios, setComentarios] = useState("");
@@ -42,6 +43,10 @@ function EcoaportaForm() {
           alt="Mapa de ubicación"
           className="rounded-xl shadow-md w-full h-auto object-cover"
         />
+      </div>
+
+      <div>
+        <UbicacionActual></UbicacionActual>
       </div>
 
       {/* Botón Seleccionar */}
