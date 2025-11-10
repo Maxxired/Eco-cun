@@ -1,30 +1,77 @@
-import { useState } from "react";
-import UbicacionActual from "./CurrentLocation";
+import { useEffect, useRef, useState } from "react";
 
 function EcoaportaForm() {
   const [comentarios, setComentarios] = useState("");
   const [anonimo, setAnonimo] = useState(false);
   const [longitud, setLongitud] = useState("");
   const [latitud, setLatitud] = useState("");
+  const [foto, setFoto] = useState<string | null>(null);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Activar cámara al montar
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      })
+      .catch((err) => {
+        console.error("Error al acceder a la cámara:", err);
+      });
+
+    // Obtener ubicación
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitud(position.coords.latitude.toString());
+          setLongitud(position.coords.longitude.toString());
+        },
+        (error) => {
+          console.warn("Ubicación no autorizada:", error.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    }
+  }, []);
+
+  const tomarFoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (video && canvas) {
+      const ctx = canvas.getContext("2d");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL("image/png");
+      setFoto(dataUrl);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Evita que se recargue la página
+    e.preventDefault();
 
-    // Aquí puedes guardar los datos, enviarlos a una API, etc.
     const datosReporte = {
       comentarios,
       anonimo,
       longitud,
       latitud,
+      foto,
     };
 
     console.log("Reporte enviado:", datosReporte);
 
-    // Opcional: limpiar el formulario
+    // Limpiar formulario
     setComentarios("");
     setAnonimo(false);
-    setLongitud("");
-    setLatitud("");
+    setFoto(null);
   };
 
   return (
@@ -36,26 +83,40 @@ function EcoaportaForm() {
         Realiza tu reporte
       </h1>
 
-      {/* Mapa de OpenStreetMap, aqui ira cuando lo tenga:(((*/}
+      {/* Vista previa de ubicación */}
+      <div className="text-sm text-gray-600 mb-4">
+        Ubicación detectada:{" "}
+        {latitud && longitud ? `${latitud}, ${longitud}` : "Obteniendo..."}
+      </div>
+
+      {/* Cámara */}
       <div className="w-full max-w-md mb-4">
-        <img
-          src="/mapa_cancun.png"
-          alt="Mapa de ubicación"
-          className="rounded-xl shadow-md w-full h-auto object-cover"
+        <video
+          ref={videoRef}
+          autoPlay
+          className="rounded-md shadow-md w-full"
         />
+        <button
+          type="button"
+          onClick={tomarFoto}
+          className="mt-2 w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors"
+        >
+          Tomar foto
+        </button>
+        <canvas ref={canvasRef} className="hidden" />
       </div>
 
-      <div>
-        <UbicacionActual></UbicacionActual>
-      </div>
-
-      {/* Botón Seleccionar */}
-      <button
-        type="button"
-        className="w-full max-w-md bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors mb-6"
-      >
-        Seleccionar
-      </button>
+      {/* Vista previa de la foto */}
+      {foto && (
+        <div className="w-full max-w-md mb-4">
+          <p className="text-sm text-gray-600 mb-1">Foto capturada:</p>
+          <img
+            src={foto}
+            alt="Captura"
+            className="rounded-md shadow-md w-full"
+          />
+        </div>
+      )}
 
       {/* Comentarios */}
       <div className="w-full max-w-md mb-4">
