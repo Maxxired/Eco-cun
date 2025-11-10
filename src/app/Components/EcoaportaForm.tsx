@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 function EcoaportaForm() {
   const [comentarios, setComentarios] = useState("");
@@ -6,6 +7,7 @@ function EcoaportaForm() {
   const [longitud, setLongitud] = useState("");
   const [latitud, setLatitud] = useState("");
   const [foto, setFoto] = useState<string | null>(null);
+  const [tipoDesecho, setTipoDesecho] = useState("orgánico");
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,7 +15,7 @@ function EcoaportaForm() {
   // Activar cámara al montar
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: true })
+      .getUserMedia({ video: { facingMode: "enviroment" } })
       .then((stream) => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -55,7 +57,8 @@ function EcoaportaForm() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  //ENVIAR REPORTE L BACK
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const datosReporte = {
@@ -64,7 +67,20 @@ function EcoaportaForm() {
       longitud,
       latitud,
       foto,
+      tipoDesecho,
     };
+    try {
+      const response = await axios.post(
+        "http://localhost:5093/api/Reports",
+        datosReporte
+      );
+      const { message, data } = response.data;
+
+      console.log("Login exitoso:", message);
+      console.log("Token recibido:", data);
+    } catch (error) {
+      console.error("Error al enviar formulario:", error);
+    }
 
     console.log("Reporte enviado:", datosReporte);
 
@@ -77,18 +93,16 @@ function EcoaportaForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="min-h-screen flex flex-col items-center justify-center bg-white px-4 py-6"
+      className="min-h-screen flex flex-col items-center justify-center bg-white px-4 py-6 pb-20"
     >
       <h1 className="text-2xl font-bold text-gray-800 mb-4">
         Realiza tu reporte
       </h1>
-
       {/* Vista previa de ubicación */}
       <div className="text-sm text-gray-600 mb-4">
         Ubicación detectada:{" "}
         {latitud && longitud ? `${latitud}, ${longitud}` : "Obteniendo..."}
       </div>
-
       {/* Cámara */}
       <div className="w-full max-w-md mb-4">
         <video
@@ -105,7 +119,6 @@ function EcoaportaForm() {
         </button>
         <canvas ref={canvasRef} className="hidden" />
       </div>
-
       {/* Vista previa de la foto */}
       {foto && (
         <div className="w-full max-w-md mb-4">
@@ -117,8 +130,27 @@ function EcoaportaForm() {
           />
         </div>
       )}
-
-      {/* Comentarios */}
+      <div className="w-full max-w-md mb-4">
+        <label
+          htmlFor="tipoDesecho"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Tipo de desecho
+        </label>
+        <select
+          id="tipoDesecho"
+          value={tipoDesecho}
+          onChange={(e) => setTipoDesecho(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
+        >
+          <option value="Basurero clandestino">Basurero clandestino</option>
+          <option value="Desechos peligrosos">Desechos peligrosos</option>
+          <option value="Quema de residuos">Quema de residuos</option>
+          <option value="Drenaje obstruido">Drenaje obstruido</option>
+          <option value="Otros">Otros</option>
+        </select>
+      </div>
+      ;{/* Comentarios */}
       <div className="w-full max-w-md mb-4">
         <label
           htmlFor="comentarios"
@@ -135,7 +167,6 @@ function EcoaportaForm() {
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 resize-none"
         />
       </div>
-
       {/* Checkbox de anonimato */}
       <div className="w-full max-w-md flex items-center mb-6">
         <input
@@ -149,7 +180,6 @@ function EcoaportaForm() {
           Reporte anónimo
         </label>
       </div>
-
       {/* Botón Enviar */}
       <button
         type="submit"
