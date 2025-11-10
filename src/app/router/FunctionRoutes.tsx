@@ -5,33 +5,27 @@ import EcoaportaForm from "../Components/EcoaportaForm";
 import MapView from "../pages/Maps/Map";
 import Campaigns from "../pages/Campaigns/campaigns";
 import OptionsView from '../pages/Options/OptionsView';
-import ReportsView from '../pages/Reports/ReportsView'; // La de reportes
+import ReportsView from '../pages/Reports/ReportsView'; 
 
 export const FunctionRoutes: RouteObject[] = [
-  // --- Tu ruta EcoAporta ---
   {
     path: "ecoaporta",
     element: <EcoaportaForm />,
   },
-
-  // --- Las rutas que movimos de HomeRoutes ---
   {
-    // SIN EL '/' y corregido
-    path: "mapa",
+    path: "Maps",
     element: <MapView />
   },
+    {
+    path: "/campaings",
+        element: <Campaigns />
+
+    },
   {
-    // SIN EL '/' y corregido
-    path: "campanas",
-    element: <Campaigns />
-  },
-  {
-    // SIN EL '/'
     path: 'opciones',
     element: <OptionsView />,
   },
 
-  // --- Las nuevas de reportes ---
   {
     path: 'mis-reportes',
     element: <ReportsView />,
