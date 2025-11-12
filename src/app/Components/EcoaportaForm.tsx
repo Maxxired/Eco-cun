@@ -1,21 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { api } from "../API/api.ts";
 
 function EcoaportaForm() {
   const [comentarios, setComentarios] = useState("");
-  const [anonimo, setAnonimo] = useState(false);
   const [longitud, setLongitud] = useState("");
   const [latitud, setLatitud] = useState("");
   const [foto, setFoto] = useState<string | null>(null);
-  const [tipoDesecho, setTipoDesecho] = useState("orgánico");
+  const [tipoDesecho, setTipoDesecho] = useState("Basurero clandestino");
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Activar cámara al montar
   useEffect(() => {
+    // Activar cámara trasera
     navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "enviroment" } })
+      .getUserMedia({ video: { facingMode: "environment" } })
       .then((stream) => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -57,36 +56,58 @@ function EcoaportaForm() {
     }
   };
 
-  //ENVIAR REPORTE L BACK
+  //Convertir de base64 a Blob para una mejor gestion
+  const base64ToBlob = (base64: string) => {
+    const byteString = atob(base64.split(",")[1]);
+    const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  };
+
+  const getCategoriaId = (tipo: string): number => {
+    switch (tipo) {
+      case "Basurero clandestino":
+        return 1;
+      case "Quema de basura":
+        return 2;
+      case "Drenaje obstruido":
+        return 3;
+      case "Derrame de sustancias peligrosas":
+        return 4;
+      case "Otros":
+        return 5;
+      default:
+        return 0;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const datosReporte = {
-      comentarios,
-      anonimo,
-      longitud,
-      latitud,
-      foto,
-      tipoDesecho,
-    };
-    try {
-      const response = await axios.post(
-        "http://localhost:5093/api/Reports",
-        datosReporte
-      );
-      const { message, data } = response.data;
+    const formData = new FormData();
+    formData.append("LocLatitude", latitud);
+    formData.append("LocLongitude", longitud);
+    formData.append("Description", comentarios);
+    formData.append("Category", getCategoriaId(tipoDesecho).toString());
 
-      console.log("Login exitoso:", message);
-      console.log("Token recibido:", data);
-    } catch (error) {
-      console.error("Error al enviar formulario:", error);
+    if (foto) {
+      const blob = base64ToBlob(foto);
+      formData.append("Image", blob, "foto.png");
     }
 
-    console.log("Reporte enviado:", datosReporte);
+    try {
+      const response = await api.post("/api/Reports", formData);
+      console.log("Reporte enviado:", response.data);
+    } catch (error) {
+      console.error("Error al enviar reporte:", error);
+    }
 
     // Limpiar formulario
     setComentarios("");
-    setAnonimo(false);
     setFoto(null);
   };
 
@@ -98,11 +119,13 @@ function EcoaportaForm() {
       <h1 className="text-2xl font-bold text-gray-800 mb-4">
         Realiza tu reporte
       </h1>
+
       {/* Vista previa de ubicación */}
       <div className="text-sm text-gray-600 mb-4">
         Ubicación detectada:{" "}
         {latitud && longitud ? `${latitud}, ${longitud}` : "Obteniendo..."}
       </div>
+
       {/* Cámara */}
       <div className="w-full max-w-md mb-4">
         <video
@@ -119,6 +142,7 @@ function EcoaportaForm() {
         </button>
         <canvas ref={canvasRef} className="hidden" />
       </div>
+
       {/* Vista previa de la foto */}
       {foto && (
         <div className="w-full max-w-md mb-4">
@@ -130,6 +154,8 @@ function EcoaportaForm() {
           />
         </div>
       )}
+
+      {/* Menú de tipo de desecho */}
       <div className="w-full max-w-md mb-4">
         <label
           htmlFor="tipoDesecho"
@@ -150,7 +176,8 @@ function EcoaportaForm() {
           <option value="Otros">Otros</option>
         </select>
       </div>
-      ;{/* Comentarios */}
+
+      {/* Comentarios */}
       <div className="w-full max-w-md mb-4">
         <label
           htmlFor="comentarios"
@@ -167,19 +194,7 @@ function EcoaportaForm() {
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 resize-none"
         />
       </div>
-      {/* Checkbox de anonimato */}
-      <div className="w-full max-w-md flex items-center mb-6">
-        <input
-          type="checkbox"
-          id="anonimo"
-          checked={anonimo}
-          onChange={(e) => setAnonimo(e.target.checked)}
-          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-        />
-        <label htmlFor="anonimo" className="ml-2 text-sm text-gray-700">
-          Reporte anónimo
-        </label>
-      </div>
+
       {/* Botón Enviar */}
       <button
         type="submit"
