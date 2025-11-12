@@ -3,8 +3,8 @@ import { api } from "../API/api.ts";
 
 function EcoaportaForm() {
   const [comentarios, setComentarios] = useState("");
-  const [longitud, setLongitud] = useState("");
-  const [latitud, setLatitud] = useState("");
+  const [longitud, setLongitud] = useState("0");
+  const [latitud, setLatitud] = useState("0");
   const [foto, setFoto] = useState<string | null>(null);
   const [tipoDesecho, setTipoDesecho] = useState("Basurero clandestino");
 
@@ -71,20 +71,21 @@ function EcoaportaForm() {
   const getCategoriaId = (tipo: string): number => {
     switch (tipo) {
       case "Basurero clandestino":
-        return 1;
+        return 0;
       case "Quema de basura":
-        return 2;
+        return 1;
       case "Drenaje obstruido":
-        return 3;
+        return 2;
       case "Derrame de sustancias peligrosas":
-        return 4;
+        return 3;
       case "Otros":
-        return 5;
+        return 4;
       default:
         return 0;
     }
   };
 
+  //MANDAR A BACK LOS DATOS
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -100,7 +101,19 @@ function EcoaportaForm() {
     }
 
     try {
-      const response = await api.post("/api/Reports", formData);
+      const token = localStorage.getItem("token");
+
+      const response = await api.post(
+        "http://localhost:5093/api/Reports",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Token usado:", token);
+
       console.log("Reporte enviado:", response.data);
     } catch (error) {
       console.error("Error al enviar reporte:", error);
@@ -170,9 +183,11 @@ function EcoaportaForm() {
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
         >
           <option value="Basurero clandestino">Basurero clandestino</option>
-          <option value="Desechos peligrosos">Desechos peligrosos</option>
-          <option value="Quema de residuos">Quema de residuos</option>
-          <option value="Drenaje obstruido">Drenaje obstruido</option>
+          <option value="Quema de basura">Quema de basura</option>
+          <option value="Drenaje obstruido">Drenaje obstruidos</option>
+          <option value="Derrame de sustancias peligrosas">
+            Derrame de sustancias peligrosas
+          </option>
           <option value="Otros">Otros</option>
         </select>
       </div>
