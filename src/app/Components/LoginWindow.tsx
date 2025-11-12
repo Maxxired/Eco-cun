@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import { api } from "../API/api.ts";
 import { useNavigate } from "react-router-dom";
 
 const LoginWindow = () => {
@@ -17,7 +17,7 @@ const LoginWindow = () => {
     };
 
     try {
-      const response = await axios.post(
+      const response = await api.post(
         "http://localhost:5093/api/Auth/logIn",
         datosReporte
       );

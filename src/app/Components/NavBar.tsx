@@ -33,8 +33,8 @@ const NavBar = () => {
           </li>
           <li>
             <Link
-            to="/Maps"  
-          className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
+              to="/Maps"
+              className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
             >
               Mapa
             </Link>
@@ -42,10 +42,17 @@ const NavBar = () => {
           <li>
             <Link
               to="/campaings"
-      
               className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
             >
               Campañas
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/opciones"
+              className="block px-4 py-2 hover:text-gray-200 hover:bg-[#1738178c] hover:rounded-xl "
+            >
+              Opciones
             </Link>
           </li>
         </ul>
