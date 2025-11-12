@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import {
   FaUser,
   FaFileAlt,
-  FaCog,
   FaSignOutAlt,
   FaChevronRight,
 } from "react-icons/fa";

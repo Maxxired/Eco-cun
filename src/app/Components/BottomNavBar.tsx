@@ -1,8 +1,4 @@
-import { useState } from "react";
-
 const BottomNavBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <nav className="fixed bottom-0 left-0 right-0 border-2 border-gray-200 bg-gray-100 text-white md:hidden z-50 shadow-md">
       <div className="flex justify-around items-center py-5 text-sm font-medium">
