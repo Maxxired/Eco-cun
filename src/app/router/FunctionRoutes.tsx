@@ -6,6 +6,7 @@ import MapView from "../pages/Maps/Map";
 import Campaigns from "../pages/Campaigns/campaigns";
 import OptionsView from '../pages/Options/OptionsView';
 import ReportsView from '../pages/Reports/ReportsView'; 
+import AdminProfileView from '../pages/Admin/AdminProfileView';
 
 export const FunctionRoutes: RouteObject[] = [
   {
@@ -21,6 +22,10 @@ export const FunctionRoutes: RouteObject[] = [
         element: <Campaigns />
 
     },
+    {
+    path: 'admin-profile', 
+    element: <AdminProfileView />,
+  },
   {
     path: 'opciones',
     element: <OptionsView />,
