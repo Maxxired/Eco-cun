@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import {
     FaUserCog,      // Icono para "Administrador"
     FaFileAlt,      // Icono para "Gestion de Reportes"
-    FaUsers,        // Icono para "Gestion de Usuarios"
     FaCog,          // Icono para "Configuración"
     FaSignOutAlt,   // Icono para "Cerrar Sesión"
     FaChevronRight  // Icono de la flecha
@@ -14,7 +13,7 @@ const monkeyLogo = "/monkeydev_logo_blanco_slogan.png";
 
 const AdminProfileView: React.FC = () => {
     return (
-        <div className="min-h-screen bg-gray-100 pb-20 flex flex-col">
+        <div className="min-h-screen bg-green-100 pb-20 flex flex-col">
             <main className="p-4 flex-grow">
 
                 {/*Tarjeta "Administrador"*/}
