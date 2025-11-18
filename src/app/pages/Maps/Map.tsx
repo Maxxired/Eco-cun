@@ -48,7 +48,6 @@ const MapView: React.FC = () => {
         });
 
         setReportes(response.data.data);
-        toast.success("Reportes cargados");
       } catch (error) {
         console.error("Error al cargar reportes:", error);
         toast.error("No se pudieron cargar los reportes");
@@ -59,32 +58,35 @@ const MapView: React.FC = () => {
   }, []);
 
   return (
-    <MapContainer
-      center={cancunPosition}
-      zoom={13}
-      className={styles.mapContainer}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="&copy; OpenStreetMap contributors"
-      />
+    <div>
+      <h1 className="text-center text-2xl font-bold">Mapa de reportes</h1>
+      <MapContainer
+        center={cancunPosition}
+        zoom={13}
+        className={styles.mapContainer}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="&copy; OpenStreetMap contributors"
+        />
 
-      {reportes.map((r) => (
-        <Marker key={r.id} position={[r.locLatitude, r.locLongitude]}>
-          <Popup>
-            <h3 className="font-bold">{r.category}</h3>
-            <p>{r.description}</p>
-            {r.imageUrl && (
-              <img
-                src={`http://localhost:5093${r.imageUrl}`}
-                alt={r.description}
-                className="mt-2 rounded-md w-40"
-              />
-            )}
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        {reportes.map((r) => (
+          <Marker key={r.id} position={[r.locLatitude, r.locLongitude]}>
+            <Popup>
+              <h3 className="font-bold">{r.category}</h3>
+              <p>{r.description}</p>
+              {r.imageUrl && (
+                <img
+                  src={`http://localhost:5093${r.imageUrl}`}
+                  alt={r.description}
+                  className="mt-2 rounded-md w-40"
+                />
+              )}
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   );
 };
 

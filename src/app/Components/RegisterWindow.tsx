@@ -53,11 +53,16 @@ function RegisterWindow() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
       {/* Logo */}
-      <img src="/logo_verde.png" alt="Ecocun Logo" className="h-50 mb-4" />
+      <img src="/logo_verde.png" alt="Ecocun Logo" className="h-50 mb-1" />
 
       {/* Formulario */}
       <div className="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
         <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <h1 className="block text-center text-2xl font-bold text-gray-700">
+              Registro
+            </h1>
+          </div>
           <div>
             <label
               htmlFor="nombre"
