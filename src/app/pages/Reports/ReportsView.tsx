@@ -1,70 +1,109 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import ReportCard, { ReportCardProps } from '../../Components/ReportCard/ReportCard';
+import { mapCategoryToString, mapStatusToString } from '../../utils/enumTranslators'; 
+const API_URL = "http://localhost:5093";
 const monkeyLogo = "/monkeydev_logo_blanco_slogan.png";
+interface ReportFromApi {
+  id: number;
+  userId: number;
+  locLatitude: number;
+  locLongitude: number;
+  description: string;
+  category: number | string;
+  status: number | string;
+  createdAt: string;
+  imageUrl?: string;
+}
 
-// 3. Datos de ejemplo que SIMULAN venir de tu API
-const dataFromBackend: ReportCardProps[] = [
-  { folio: '0001', ubicacion: 'Bonfil', caso: 'Basurero Clandestino', status: 'Nuevo' },
-];
+interface ApiResponse {
+  message: string;
+  data: ReportFromApi[]; 
+}
 
 const ReportsView: React.FC = () => {
-  const [reports, setReports] = useState<ReportCardProps[]>([]); 
+  const [reports, setReports] = useState<ReportCardProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    setReports(dataFromBackend);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('No estás autenticado. Por favor, inicia sesión.');
+      setIsLoading(false);
+      return; 
+    }
+
+    const fetchReports = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/Reports/me`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 401) {
+          throw new Error('Tu sesión expiró o no es válida.');
+        }
+        if (!response.ok) {
+          throw new Error('Error al cargar los reportes');
+        }
+
+        const fullResponse: ApiResponse = await response.json();
+
+        if (fullResponse && fullResponse.data) {
+          const translatedReports = fullResponse.data.map((report: ReportFromApi): ReportCardProps => ({
+            folio: report.id.toString().padStart(4, '0'), 
+            ubicacion: `Lat: ${report.locLatitude.toFixed(4)}, Lon: ${report.locLongitude.toFixed(4)}`, 
+            caso: mapCategoryToString(report.category), 
+            status: mapStatusToString(report.status) 
+          }));
+
+          setReports(translatedReports); 
+
+        } else {
+          throw new Error('Formato de respuesta incorrecto');
+        }
+
+      } catch (err) {
+        console.error("Error conectando a la API:", err);
+        setError((err as Error).message); 
+      } finally {
+        setIsLoading(false); 
+      }
+    };
+
+    fetchReports();
   }, []); 
 
   return (
-    <div className="min-h-screen bg-white-100 pb-20 flex flex-col">
+    <div className="min-h-screen bg-white pb-20 flex flex-col">
       <main className="flex-grow">
-        
-        {/*Buscador*/}
-        <div className="p-4 pt-6">
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-              <FaSearch className="w-5 h-5" />
-            </span>
-            <input 
-              type="text" 
-              placeholder="Buscar Folio del Reporte"
-              className="w-full bg-gray-200 text-gray-800 rounded-lg p-3 pl-10 focus:outline-none focus:ring-2 focus:ring-[#228B4B]"
-            />
-          </div>
-        </div>
-
-        {/*Botones de Filtro*/}
-        <div className="flex justify-around px-4 pb-4">
-          <button className="text-sm bg-red-400 text-white px-4 py-1 rounded-full shadow hover:bg-red-500 transition-colors">
-            Nuevo
-          </button>
-          <button className="text-sm bg-green-500 text-white px-4 py-1 rounded-full shadow hover:bg-green-600 transition-colors">
-            En proceso
-          </button>
-          <button className="text-sm bg-indigo-500 text-white px-4 py-1 rounded-full shadow hover:bg-indigo-600 transition-colors">
-            Resueltos
-          </button>
-        </div>
-
         <div className="px-4 space-y-4">
-          {reports.map((report) => (
-            <ReportCard 
-              key={report.folio}
-              folio={report.folio}
-              ubicacion={report.ubicacion}
-              caso={report.caso}
-              status={report.status}
-            />
-          ))}
+          {isLoading ? (
+            <p className="text-center text-gray-500">Cargando mis reportes...</p>
+          ) : error ? (
+            <p className="text-center text-red-500">{error}</p>
+          ) : reports.length === 0 ? (
+            <p className="text-center text-gray-500">No has creado ningún reporte aún.</p>
+          ) : (
+            reports.map((report) => (
+              <ReportCard Readonly
+                key={report.folio}
+                folio={report.folio}
+                ubicacion={report.ubicacion}
+                caso={report.caso}
+                status={report.status}
+              />
+            ))
+          )}
         </div>
-
       </main>
-      
-      <div className="text-center space-y-4 pt-8 pb-4"> 
-        <div>
-          <img src={monkeyLogo} alt="MonkeyDevs" className="h-16 mx-auto opacity-50" />
-        </div>
-      </div>
 
+      {/* Footer del Monito */}
+      <div className="text-center space-y-4 pt-8 pb-4">
+      </div>
     </div>
   );
 };

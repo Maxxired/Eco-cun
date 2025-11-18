@@ -4,8 +4,11 @@ import type { RouteObject } from "react-router-dom";
 import EcoaportaForm from "../Components/EcoaportaForm";
 import MapView from "../pages/Maps/Map";
 import Campaigns from "../pages/Campaigns/campaigns";
-import OptionsView from "../pages/Options/OptionsView";
-import ReportsView from "../pages/Reports/ReportsView";
+import OptionsView from '../pages/Options/OptionsView';
+import ReportsView from '../pages/Reports/ReportsView'; 
+import AdminProfileView from '../pages/Admin/AdminProfileView';
+
+
 
 export const FunctionRoutes: RouteObject[] = [
   {
@@ -15,6 +18,15 @@ export const FunctionRoutes: RouteObject[] = [
   {
     path: "Maps",
     element: <MapView />,
+  },
+    {
+    path: "/campaings",
+        element: <Campaigns />
+
+    },
+    {
+    path: 'admin-profile', 
+    element: <AdminProfileView />,
   },
   {
     path: "/campaings",

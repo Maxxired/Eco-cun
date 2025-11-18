@@ -29,7 +29,6 @@ const LoginWindow = () => {
       console.log("Token recibido:", token);
 
       navigate("/");
-      // Aquí podrías guardar el token en localStorage o redirigir al usuario
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
     }
