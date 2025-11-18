@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../API/api.ts";
+import toast from "react-hot-toast";
 
 function EcoaportaForm() {
   const [comentarios, setComentarios] = useState("");
@@ -112,6 +113,7 @@ function EcoaportaForm() {
           },
         }
       );
+      toast.success("Reporte enviado correctamente");
       console.log("Token usado:", token);
 
       console.log("Reporte enviado:", response.data);

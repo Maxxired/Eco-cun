@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { api } from "../API/api.ts";
+import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 function RegisterWindow() {
   const [nombre, setNombre] = useState("");
@@ -7,6 +10,8 @@ function RegisterWindow() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [aceptaPrivacidad, setAceptaPrivacidad] = useState(false);
+
+  const navigate = useNavigate();
 
   //Envio del formularioooo
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,7 +36,8 @@ function RegisterWindow() {
 
       console.log("Usuario registrado:", response.data);
 
-      alert("Registro exitoso. Bienvenido a Ecocun!");
+      toast.success("Registro exitoso");
+      navigate("/iniciar_sesion");
 
       // Limpiar formulario
       setNombre("");
@@ -40,7 +46,7 @@ function RegisterWindow() {
       setPassword("");
     } catch (error: any) {
       console.error("Error al registrar usuario:", error);
-      alert("Error al registrar. Verifica tus datos.");
+      toast.error("Este correo ya está registrado");
     }
   };
 
@@ -146,12 +152,30 @@ function RegisterWindow() {
         </form>
       </div>
 
-      {/* Icono inferior */}
-      <div className="mt-8">
-        <img
-          src="/icono_usuario.png"
-          alt="Usuario"
-          className="h-6 opacity-50"
+      <div>
+        <Toaster
+          position="bottom-center"
+          reverseOrder={false}
+          toastOptions={{
+            style: {
+              fontSize: "18px", // más grande
+              padding: "20px", // más espacio interno
+              borderRadius: "10px",
+              margin: "100px",
+            },
+            success: {
+              style: {
+                background: "#16a34a", // verde Ecocun
+                color: "white",
+              },
+            },
+            error: {
+              style: {
+                background: "#dc2626", // rojo para errores
+                color: "white",
+              },
+            },
+          }}
         />
       </div>
     </div>
