@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import ReportCard, { ReportCardProps } from '../../Components/ReportCard/ReportCard';
-import { mapCategoryToString, mapStatusToString } from '../../utils/enumTranslators'; // 1. Importamos los traductores
+import { mapCategoryToString, mapStatusToString } from '../../utils/enumTranslators'; 
 const API_URL = "http://localhost:5093";
 const monkeyLogo = "/monkeydev_logo_blanco_slogan.png";
 interface ReportFromApi {
@@ -27,7 +27,7 @@ const ReportsView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (!token) {
       setError('No estás autenticado. Por favor, inicia sesión.');
       setIsLoading(false);
