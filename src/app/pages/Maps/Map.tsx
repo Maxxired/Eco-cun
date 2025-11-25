@@ -48,7 +48,6 @@ const MapView: React.FC = () => {
         });
 
         setReportes(response.data.data);
-        toast.success("Reportes cargados");
       } catch (error) {
         console.error("Error al cargar reportes:", error);
         toast.error("No se pudieron cargar los reportes");

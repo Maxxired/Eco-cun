@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../API/api.ts";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginWindow = () => {
   const [email, setEmail] = useState("");
@@ -82,20 +82,20 @@ const LoginWindow = () => {
         </form>
 
         <div className="mt-4 text-center">
-          <a
-            href="/recuperar"
+          <Link
+            to="/recuperar"
             className="text-sm text-green-700 hover:underline"
           >
             ¿Olvidaste tu contraseña?
-          </a>
+          </Link>
         </div>
         <div className="mt-4 text-center">
-          <a
-            href="/registro"
+          <Link
+            to="/registro"
             className="text-sm text-green-700 hover:underline"
           >
             Registrate
-          </a>
+          </Link>
         </div>
       </div>
     </div>
