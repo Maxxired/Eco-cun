@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch } from "react-icons/fa";
 import ReportCard, {
   ReportCardProps,
 } from "../../Components/ReportCard/ReportCard";
@@ -10,7 +9,6 @@ import {
 const API_URL = "http://localhost:5093";
 interface ReportFromApi {
   id: number;
-  userId: number;
   locLatitude: number;
   locLongitude: number;
   description: string;
@@ -100,7 +98,6 @@ const ReportsView: React.FC = () => {
           ) : (
             reports.map((report) => (
               <ReportCard
-                Readonly
                 key={report.folio}
                 folio={report.folio}
                 ubicacion={report.ubicacion}

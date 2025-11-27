@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaChevronRight } from 'react-icons/fa';
 
-type ReportStatus = 'Nuevo' | 'En proceso' | 'Resueltos';
+export type ReportStatus = 'Nuevo' | 'En proceso' | 'Resueltos' | 'Desconocido';
 export interface ReportCardProps {
     folio: string;
     ubicacion: string;
@@ -14,6 +14,7 @@ const statusColors: Record<ReportStatus, string> = {
     'Nuevo': 'bg-red-400 text-white',
     'En proceso': 'bg-green-500 text-white',
     'Resueltos': 'bg-indigo-500 text-white',
+    'Desconocido': 'bg-gray-400 text-white',
 };
 
 const ReportCard: React.FC<ReportCardProps> = ({ folio, ubicacion, caso, status }) => {

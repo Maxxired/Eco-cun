@@ -52,12 +52,12 @@ const OptionsView: React.FC = () => {
           </ul>
         </div>
         <div className="text-center space-y-4 mt-auto pb-4">
-          <a
-            href="/terminos"
+          <Link
+            to="/terminos"
             className="text-sm text-gray-500 underline hover:text-gray-700"
           >
             Terminos y condiciones
-          </a>
+          </Link>
         </div>
       </main>
     </div>
