@@ -3,8 +3,8 @@ import { api } from "../API/api.ts";
 import { useNavigate } from "react-router-dom";
 
 const LoginWindow = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
@@ -12,23 +12,29 @@ const LoginWindow = () => {
     e.preventDefault(); // Evita recargar la página
 
     const datosReporte = {
-      email,
-      password,
+      Email,
+      Password,
     };
 
     try {
       const response = await api.post(
-        "http://localhost:5093/api/Auth/logIn",
+        "http://localhost:5093/api/auth/login",
         datosReporte
       );
-      const { message, token } = response.data;
+      const { success, message, role, token, refreshToken, expiration } =
+        response.data;
 
       localStorage.setItem("token", token);
 
-      console.log("Login exitoso:", message);
-      console.log("Token recibido:", token);
-
-      navigate("/");
+      console.log("Success:", success);
+      console.log("Message:", message);
+      console.log("Role", role);
+      console.log("Token:", token);
+      console.log("Refresh Token:", refreshToken);
+      console.log("Expiration:", expiration);
+      if (success == true) {
+        navigate("/");
+      }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
     }
@@ -42,16 +48,16 @@ const LoginWindow = () => {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label
-              htmlFor="email"
+              htmlFor="Email"
               className="block text-sm font-medium text-gray-700"
             >
               Correo
             </label>
             <input
               type="email"
-              id="email"
+              id="e\\Email"
               placeholder="ejemplo@ejemplo.com"
-              value={email}
+              value={Email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
             />
@@ -59,15 +65,15 @@ const LoginWindow = () => {
 
           <div>
             <label
-              htmlFor="password"
+              htmlFor="Password"
               className="block text-sm font-medium text-gray-700"
             >
               Contraseña
             </label>
             <input
               type="password"
-              id="password"
-              value={password}
+              id="Password"
+              value={Password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
             />
@@ -81,14 +87,6 @@ const LoginWindow = () => {
           </button>
         </form>
 
-        <div className="mt-4 text-center">
-          <a
-            href="/recuperar"
-            className="text-sm text-green-700 hover:underline"
-          >
-            ¿Olvidaste tu contraseña?
-          </a>
-        </div>
         <div className="mt-4 text-center">
           <a
             href="/registro"
