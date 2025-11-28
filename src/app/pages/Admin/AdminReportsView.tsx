@@ -5,7 +5,7 @@ import ReportCard, { ReportCardProps } from '../../Components/ReportCard/ReportC
 import { mapCategoryToString, mapStatusToString } from '../../utils/enumTranslators';
 
 const API_URL = "http://localhost:5093"; 
-interface ReportFromApi { id: number; userId: number; locLatitude: number; locLongitude: number; description: string; category: number | string; status: number | string; createdAt: string; imageUrl?: string; }
+interface ReportFromApi { id: number; userId: number; locLatitude: number; locLongitude: number; description: string; category: number | string; status: number | string; createdAt: string; imageUrl?: string ; }
 
 const AdminReportsView: React.FC = () => {
   const [reports, setReports] = useState<ReportCardProps[]>([]); 
