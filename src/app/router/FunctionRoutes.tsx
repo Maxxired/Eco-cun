@@ -8,6 +8,7 @@ import OptionsView from '../pages/Options/OptionsView';
 import ReportsView from '../pages/Reports/ReportsView'; 
 import AdminProfileView from '../pages/Admin/AdminProfileView';
 import TermsView from '../pages/Terms/TermsView';
+import AdminReportsView from "../pages/Admin/AdminReportsView";
 
 
 
@@ -41,6 +42,10 @@ export const FunctionRoutes: RouteObject[] = [
   {
     path: "mis-reportes",
     element: <ReportsView />,
+  },
+  {
+    path: "reportes-admin",
+    element: <AdminReportsView />,
   },
   {
     path: "reportes/:folioId",

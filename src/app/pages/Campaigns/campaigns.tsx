@@ -5,7 +5,6 @@ import { toast } from "react-hot-toast";
 import {
   FaMapMarkerAlt,
   FaCalendarAlt,
-  FaClock,
   FaPhone,
 } from "react-icons/fa";
 

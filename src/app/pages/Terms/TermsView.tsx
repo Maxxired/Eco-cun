@@ -1,10 +1,10 @@
 import React from 'react';
-
 const TermsView: React.FC = () => {
   return (
     <div className="min-h-screen bg-white pb-20 flex flex-col">
     
       <main className="p-6 text-gray-800 text-sm overflow-y-auto flex-grow">
+        <h1 className="text-2xl font-black text-gray-800 mb-6">Términos y Condiciones</h1>
         
         <h2 className="text-lg font-bold mb-2 text-[#228B4B]">1. Objeto de la Plataforma</h2>
         <p className="mb-4 text-justify">

@@ -11,15 +11,15 @@ const parseJwt = (token: string) => {
 };
 
 const LoginWindow = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const datosReporte = { email, password };
+    const datosReporte = { Email, Password };
 
     try {
       const response = await api.post("/api/auth/logIn", datosReporte);
@@ -56,9 +56,9 @@ const LoginWindow = () => {
             </label>
             <input
               type="email"
-              id="email"
+              id="e\\Email"
               placeholder="ejemplo@ejemplo.com"
-              value={email}
+              value={Email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
             />
@@ -70,8 +70,8 @@ const LoginWindow = () => {
             </label>
             <input
               type="password"
-              id="password"
-              value={password}
+              id="Password"
+              value={Password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
             />
