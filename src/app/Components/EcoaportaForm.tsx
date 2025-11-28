@@ -50,17 +50,30 @@ function EcoaportaForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // JSON payload (Compatible con tu backend actual)
-    const payload = {
-        LocLatitude: parseFloat(latitud),
-        LocLongitude: parseFloat(longitud),
-        Description: comentarios,
-        Category: getCategoriaId(tipoDesecho),
-        Image: null 
-    };
+
+    const formData = new FormData();
+    formData.append("LocLatitude", latitud);
+    formData.append("LocLongitude", longitud);
+    formData.append("Description", comentarios);
+    formData.append("Category", getCategoriaId(tipoDesecho).toString());
+
+    if (foto) {
+      // convertir base64 a Blob
+      const byteString = atob(foto.split(",")[1]);
+      const mimeString = foto.split(",")[0].split(":")[1].split(";")[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([ab], { type: mimeString });
+      formData.append("Image", blob, "evidencia.png");
+    }
 
     try {
-      await api.post("/api/reports/createreport", payload);
+      await api.post("/api/reports/createreport", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       toast.success("Reporte enviado correctamente");
       setComentarios("");
       setFoto(null);
