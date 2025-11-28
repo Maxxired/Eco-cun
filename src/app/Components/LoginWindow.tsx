@@ -22,7 +22,7 @@ const LoginWindow = () => {
     const datosReporte = { email, password };
 
     try {
-      const response = await api.post("/api/Auth/logIn", datosReporte);
+      const response = await api.post("/api/auth/logIn", datosReporte);
       const { message, token } = response.data;
       localStorage.setItem("token", token);
       const decodedToken = parseJwt(token);
@@ -32,11 +32,6 @@ const LoginWindow = () => {
       console.log("Rol detectado:", userRole);
       localStorage.setItem("role", userRole); 
       
-      if (userRole === "Admin") {
-        navigate("/admin-profile");
-      } else {
-        navigate("/");
-      }
       if (userRole === "Admin") {
         navigate("/admin-profile");
       } else {

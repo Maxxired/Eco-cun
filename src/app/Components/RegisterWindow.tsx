@@ -30,7 +30,7 @@ function RegisterWindow() {
     };
 
     try {
-      const response = await api.post("/api/Auth/register", datosRegistro);
+      const response = await api.post("/api/auth/register", datosRegistro);
       const { message } = response.data;
       console.log("Login exitoso:", message);
 

@@ -78,7 +78,7 @@ function EcoaportaForm() {
 
     try {
       // CORRECCIÓN DE URL: /api/Reports/CreateReport
-      const response = await api.post("/api/Reports/CreateReport", payload);
+      const response = await api.post("/api/reports/createreport", payload);
       
       toast.success("Reporte enviado correctamente");
       console.log("Respuesta:", response.data);
