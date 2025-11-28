@@ -94,7 +94,7 @@ const Campaigns: React.FC = () => {
             <CampaignCard
               key={campaign.id}
               iconSrc={
-                campaign.banner ? campaign.banner : "/default_campaign_icon.png"
+                campaign.banner ? campaign.banner : "/default_campaign_icon.jpg"
               } //! Imagen por defecto si no hay banner
               altText={campaign.name}
               title={campaign.name}
@@ -122,7 +122,7 @@ const Campaigns: React.FC = () => {
                   src={
                     selectedCampaign.banner
                       ? selectedCampaign.banner
-                      : "/default_campaign_banner.png"
+                      : "/default_campaign_icon.jpg"
                   } //! Imagen por defecto si no hay banner
                   alt={selectedCampaign.name}
                   className="modal-header-image"
