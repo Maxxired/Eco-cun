@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReportCard, { ReportCardProps } from '../../Components/ReportCard/ReportCard';
 import { mapCategoryToString, mapStatusToString } from '../../utils/enumTranslators';
-const API_URL = "http://localhost:5093";
+
+const API_URL = "http://localhost:5093"; 
+
 interface ReportFromApi {
   id: number;
+  userId: number;
   locLatitude: number;
   locLongitude: number;
   description: string;
@@ -19,7 +22,7 @@ interface ApiResponse {
 }
 
 const ReportsView: React.FC = () => {
-  const [reports, setReports] = useState<ReportCardProps[]>([]);
+  const [reports, setReports] = useState<ReportCardProps[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,12 +31,13 @@ const ReportsView: React.FC = () => {
     if (!token) {
       setError('No estás autenticado. Por favor, inicia sesión.');
       setIsLoading(false);
-      return;
+      return; 
     }
 
     const fetchReports = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/Reports/me`, {
+        // CORRECCIÓN DE URL: /api/Reports/MyReports
+        const response = await fetch(`${API_URL}/api/Reports/MyReports`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -48,35 +52,43 @@ const ReportsView: React.FC = () => {
         }
 
         const fullResponse: ApiResponse = await response.json();
-        
+
         if (fullResponse && fullResponse.data) {
           const translatedReports = fullResponse.data.map((report: ReportFromApi): ReportCardProps => ({
-            folio: report.id.toString().padStart(4, '0'),
+            folio: report.id.toString().padStart(4, '0'), 
             ubicacion: `Lat: ${report.locLatitude.toFixed(4)}, Lon: ${report.locLongitude.toFixed(4)}`,
             caso: mapCategoryToString(report.category),
-            status: mapStatusToString(report.status)
+            status: mapStatusToString(report.status),
+            description: report.description || "", // Aseguramos que no sea undefined
+            imageUrl: report.imageUrl,
+            lat: report.locLatitude,
+            lon: report.locLongitude
           }));
 
           setReports(translatedReports);
-
         } else {
-          throw new Error('Formato de respuesta incorrecto');
+          setReports([]);
         }
 
       } catch (err) {
         console.error("Error conectando a la API:", err);
-        setError((err as Error).message);
+        setError((err as Error).message); 
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); 
       }
     };
 
     fetchReports();
-  }, []);
+  }, []); 
 
   return (
     <div className="min-h-screen bg-white pb-20 flex flex-col">
-      <main className="flex-grow">
+      <div className="p-4 bg-white shadow-sm sticky top-0 z-10">
+        <h1 className="text-xl font-black text-gray-800 text-center uppercase tracking-wide">
+            Mis Reportes
+        </h1>
+      </div>
+      <main className="flex-grow p-4">
         <div className="px-4 space-y-4">
           {isLoading ? (
             <p className="text-center text-gray-500">Cargando mis reportes...</p>
@@ -88,21 +100,14 @@ const ReportsView: React.FC = () => {
             reports.map((report) => (
               <ReportCard 
                 key={report.folio}
-                folio={report.folio}
-                ubicacion={report.ubicacion}
-                caso={report.caso}
-                status={report.status}
+                {...report} // Pasa todas las props automáticamente
               />
             ))
           )}
         </div>
       </main>
-
-      {/* Footer del Monito */}
-      <div className="text-center space-y-4 pt-8 pb-4">
-      </div>
     </div>
   );
-};
+};  
 
 export default ReportsView;

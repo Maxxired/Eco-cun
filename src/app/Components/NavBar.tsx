@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 
 const NavBar = () => {
   return (
-    <nav className="bg-[#228B4B] text-white px-2 py-5">
+    <nav className="bg-[#228B4B] text-white px-4 py-6">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo + Marca */}
         <a href="/" className="flex items-center space-x-2">
-          <img src="logo_blanco.png" alt="Ecocun" className="h-8 w-8" />
+          <img src="logo_blanco.png" alt="Ecocun" className="h-9 w-9" />
           <span className="text-xl font-bold">Ecocun</span>
         </a>
 

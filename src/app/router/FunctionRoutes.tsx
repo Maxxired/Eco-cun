@@ -7,6 +7,7 @@ import Campaigns from "../pages/Campaigns/campaigns";
 import OptionsView from '../pages/Options/OptionsView';
 import ReportsView from '../pages/Reports/ReportsView'; 
 import AdminProfileView from '../pages/Admin/AdminProfileView';
+import TermsView from '../pages/Terms/TermsView';
 
 
 
@@ -44,5 +45,9 @@ export const FunctionRoutes: RouteObject[] = [
   {
     path: "reportes/:folioId",
     element: <div>Aquí va el detalle del reporte</div>,
+  },
+  {
+    path: 'terminos',
+    element: <TermsView />,
   },
 ];

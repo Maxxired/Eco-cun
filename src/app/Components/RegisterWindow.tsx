@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../API/api.ts";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 
@@ -137,9 +137,10 @@ function RegisterWindow() {
 
             <label htmlFor="privacidad" className="ml-2 text-sm text-gray-700">
               He leído y acepto los{" "}
-              <a href="/privacidad" className="text-green-700 underline">
+              <Link
+              to="/terminos" className="text-green-700 underline">
                 términos de privacidad
-              </a>
+              </Link>
             </label>
           </div>
 
@@ -158,7 +159,7 @@ function RegisterWindow() {
           reverseOrder={false}
           toastOptions={{
             style: {
-              fontSize: "18px", // más grande
+              fontSize: "18px", 
               padding: "20px", // más espacio interno
               borderRadius: "10px",
               margin: "100px",

@@ -13,11 +13,11 @@ const monkeyLogo = "/monkeydev_logo_blanco_slogan.png";
 
 const AdminProfileView: React.FC = () => {
     return (
-        <div className="min-h-screen bg-green-100 pb-20 flex flex-col">
+        <div className="min-h-screen bg-gray-10 pb-20 flex flex-col">
             <main className="p-4 flex-grow">
 
                 {/*Tarjeta "Administrador"*/}
-                <div className="bg-green-200 rounded-xl p-6 flex flex-col items-center justify-center mb-6 shadow-sm">
+                <div className="bg-gray-200 rounded-xl p-6 flex flex-col items-center justify-center mb-6 shadow-sm">
                     <div className="bg-green-700 rounded-full p-4 w-20 h-20 flex items-center justify-center mb-3">
                         <FaUserCog className="w-10 h-10 text-white" />
                     </div>
@@ -33,7 +33,7 @@ const AdminProfileView: React.FC = () => {
                     <ul className="bg-white rounded-xl overflow-hidden shadow-sm">
                         {/* Botón "Gestion de Reportes" */}
                         <li>
-                            <Link to="/mis-reportes" className="flex items-center justify-between p-4 w-full text-left border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                           <Link to="/admin/gestion-reportes" className="flex items-center justify-between p-4 w-full text-left border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                 <div className="flex items-center gap-3">
                                     <FaFileAlt className="w-5 h-5 text-gray-500" />
                                     <span className="text-gray-700 font-medium">Gestion de Reportes</span>
@@ -62,6 +62,7 @@ const AdminProfileView: React.FC = () => {
                             <button
                                 className="flex items-center justify-between p-4 w-full text-left hover:bg-gray-50 transition-colors"
                             >
+                                
                                 <div className="flex items-center gap-3">
                                     <FaSignOutAlt className="w-5 h-5 text-red-500" />
                                     <span className="text-red-500 font-medium">Cerrar Sesión</span>

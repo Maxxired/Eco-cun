@@ -10,7 +10,6 @@ interface CampaignCardProps {
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({ iconSrc, altText, title, institution, onParticipate }) => {
-  // Aseguramos que si no hay imagen, no se rompa
   const backgroundStyle = iconSrc ? { backgroundImage: `url("${iconSrc}")` } : {};
 
   return (
@@ -18,7 +17,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ iconSrc, altText, title, in
       {/* IMAGEN DE FONDO */}
       <div 
         className="campaign-image-background" 
-        style={backgroundStyle} // <-- Usamos la variable con comillas dobles aseguradas
+        style={backgroundStyle}
         role="img" 
         aria-label={altText}
       >
@@ -42,7 +41,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ iconSrc, altText, title, in
         className="participate-button"
         onClick={onParticipate}
       >
-        Participar <span className="arrow"> &gt;</span>
+        Ver Detalles <span className="arrow"> &gt;</span>
       </button>
     </div>
   );
