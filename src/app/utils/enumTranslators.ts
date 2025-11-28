@@ -1,28 +1,25 @@
 export const mapCategoryToString = (category: number | string): string => {
   if (category === null || category === undefined) return "Otro";
-  
-  // Convertimos a string y a minúsculas para comparar sin errores
-  const catStr = category.toString().toLowerCase();
+  const val = category.toString().toLowerCase();
 
-  if (catStr === "0" || catStr === "basureroclandestino") return "Basurero Clandestino";
-  if (catStr === "1" || catStr === "quemadebasura") return "Quema de Basura";
-  if (catStr === "2" || catStr === "drenajeobstruido") return "Drenaje Obstruido";
-  if (catStr === "3" || catStr === "derramedesustanciaspeligrosas") return "Derrame de Sustancias";
+  if (val === "0" || val === "basureroclandestino") return "Basurero Clandestino";
+  if (val === "1" || val === "quemadebasura") return "Quema de Basura";
+  if (val === "2" || val === "drenajeobstruido") return "Drenaje Obstruido";
+  if (val === "3" || val === "derramedesustanciaspeligrosas") return "Derrame de Sustancias";
   
   return "Otro";
 };
 
 export const mapStatusToString = (status: number | string): string => {
   if (status === null || status === undefined) return "Desconocido";
+  const val = status.toString().toLowerCase();
 
-  const statStr = status.toString().toLowerCase();
-
-  if (statStr === "0" || statStr === "underreview") return "Nuevo";
-  if (statStr === "1" || statStr === "pending") return "Pendiente";
-  if (statStr === "2" || statStr === "inprogress") return "En proceso";
-  if (statStr === "3" || statStr === "resolved") return "Resuelto";
-  if (statStr === "4" || statStr === "closed") return "Cerrado";
-  if (statStr === "5" || statStr === "rejected") return "Rechazado";
+  if (val === "0" || val === "underreview") return "Nuevo";
+  if (val === "1" || val === "pending") return "Pendiente";
+  if (val === "2" || val === "inprogress") return "En proceso";
+  if (val === "3" || val === "resolved") return "Resuelto";
+  if (val === "4" || val === "closed") return "Cerrado";
+  if (val === "5" || val === "rejected") return "Rechazado";
 
   return "Desconocido";
 };
