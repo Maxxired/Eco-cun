@@ -29,7 +29,7 @@ const HomeView = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="bg-gradient-to-tr from-[#239a54] to-[#18693a] text-white rounded-2xl shadow-xl p-6 hover:scale-105 transition-transform"
         >
-          <h2 className="text-xl font-bold mb-2">¿Qué es?</h2>
+          <h2 className="text-xl font-bold mb-2">¿Quiénes somos?</h2>
           <p className="text-sm leading-relaxed">
             Una app ciudadana para reportar contaminación y promover acciones
             ecológicas locales.

@@ -19,7 +19,7 @@ const LoginWindow = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const datosReporte = { email, password };
+    const datosReporte = { Email, Password };
 
     try {
       const response = await api.post("/api/Auth/logIn", datosReporte);

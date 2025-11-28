@@ -28,7 +28,8 @@ const AdminReportsView: React.FC = () => {
                  status: mapStatusToString(r.status),
                  description: r.description,
                  imageUrl: getImageUrl(r.imageUrl),
-                 lat: r.locLatitude, lon: r.locLongitude
+                 lat: r.locLatitude, 
+                 lon: r.locLongitude
              }));
              setReports(mapped);
          }

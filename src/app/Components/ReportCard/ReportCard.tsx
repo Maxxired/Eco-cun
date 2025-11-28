@@ -8,13 +8,15 @@ export interface ReportCardProps {
   status: string;
   description?: string;
   imageUrl?: string;
+  lat: number;
+  lon: number;
   onViewDetails?: () => void;
 }
 
-const ReportCard: React.FC<ReportCardProps> = ({ 
-  folio, ubicacion, caso, status, onViewDetails 
+const ReportCard: React.FC<ReportCardProps> = ({
+  folio, ubicacion, caso, status, onViewDetails
 }) => {
-  
+
   // Colores estilo "Badge" de tu imagen
   const getStatusColor = (s: string) => {
     if (s === 'Nuevo') return 'bg-[#F87171]'; // Rojo salmón
@@ -26,7 +28,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
   return (
     // FONDO GRIS CLARO y BORDE REDONDEADO
     <div className="bg-gray-100 rounded-2xl p-5 mb-4 relative shadow-sm">
-      
+
       {/* Badge Flotante */}
       <span className={`${getStatusColor(status)} text-white text-xs font-bold px-3 py-1 rounded-full absolute top-5 right-5`}>
         {status}
@@ -36,19 +38,19 @@ const ReportCard: React.FC<ReportCardProps> = ({
       <div className="mb-1">
         <h3 className="text-xl font-bold text-gray-900">Folio: {folio}</h3>
       </div>
-      
+
       <div className="text-sm text-gray-800 mb-1">
         <span className="font-bold">Ubicacion:</span> {ubicacion}
       </div>
-      
+
       <div className="text-sm text-gray-800 mb-4">
         <span className="font-bold">Caso:</span> {caso}
       </div>
 
       {/* Link Ver Detalles */}
       <div className="flex justify-end">
-        <button 
-          onClick={onViewDetails} 
+        <button
+          onClick={onViewDetails}
           className="text-green-600 font-bold text-sm flex items-center gap-1 hover:underline"
         >
           Ver detalles <FaChevronRight className="text-xs" />
