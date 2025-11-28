@@ -86,7 +86,7 @@ const ReportsView: React.FC = () => {
             </div>
           ) : (
             reports.map((report) => (
-              <ReportCard 
+              <ReportCard
                 key={report.folio}
                 {...report} 
                 onViewDetails={() => setSelectedReport(report)} 
