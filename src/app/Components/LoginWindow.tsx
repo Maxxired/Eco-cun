@@ -4,9 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 const parseJwt = (token: string) => {
   try {
-    return JSON.parse(atob(token.split('.')[1]));
-  } catch (e);
-  ) {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch (e) {
     return null;
   }
 };
@@ -27,18 +26,21 @@ const LoginWindow = () => {
       const { message, token } = response.data;
       localStorage.setItem("token", token);
       const decodedToken = parseJwt(token);
-      const userRole = decodedToken["role"] || decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      const userRole =
+        decodedToken["role"] ||
+        decodedToken[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ];
 
       console.log("Login exitoso:", message);
       console.log("Rol detectado:", userRole);
-      localStorage.setItem("role", userRole); 
-      
+      localStorage.setItem("role", userRole);
+
       if (userRole === "Admin") {
         navigate("/admin-profile");
       } else {
         navigate("/");
       }
-
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       alert("Credenciales incorrectas o error en el servidor.");
@@ -52,7 +54,10 @@ const LoginWindow = () => {
       <div className="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Correo
             </label>
             <input
@@ -66,7 +71,10 @@ const LoginWindow = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Contraseña
             </label>
             <input
@@ -87,12 +95,18 @@ const LoginWindow = () => {
         </form>
 
         <div className="mt-4 text-center">
-          <Link to="/recuperar" className="text-sm text-green-700 hover:underline">
+          <Link
+            to="/recuperar"
+            className="text-sm text-green-700 hover:underline"
+          >
             ¿Olvidaste tu contraseña?
           </Link>
         </div>
         <div className="mt-4 text-center">
-          <Link to="/registro" className="text-sm text-green-700 hover:underline">
+          <Link
+            to="/registro"
+            className="text-sm text-green-700 hover:underline"
+          >
             Regístrate
           </Link>
         </div>

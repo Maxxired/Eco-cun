@@ -30,7 +30,7 @@ function RegisterWindow() {
     };
 
     try {
-      const response = await api.post("/api/auth/register", datosRegistro);
+      const response = await api.post("/api/Auth/register", datosRegistro);
       const { message } = response.data;
       console.log("Login exitoso:", message);
 
@@ -142,8 +142,7 @@ function RegisterWindow() {
 
             <label htmlFor="privacidad" className="ml-2 text-sm text-gray-700">
               He leído y acepto los{" "}
-              <Link
-              to="/terminos" className="text-green-700 underline">
+              <Link to="/terminos" className="text-green-700 underline">
                 términos de privacidad
               </Link>
             </label>
@@ -164,7 +163,7 @@ function RegisterWindow() {
           reverseOrder={false}
           toastOptions={{
             style: {
-              fontSize: "18px", 
+              fontSize: "18px",
               padding: "20px", // más espacio interno
               borderRadius: "10px",
               margin: "100px",
