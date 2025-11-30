@@ -20,7 +20,7 @@ export const PlantIABox = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-[140px] right-4 w-[280px] max-w-[90vw] bg-white/90 backdrop-blur-md shadow-xl rounded-xl p-4 text-sm text-[#228B4B] z-[90]">
+    <div className="fixed bottom-[80px] left-5 w-[280px] max-w-[90vw] bg-white/90 backdrop-blur-md shadow-xl rounded-xl p-4 text-sm text-[#228B4B] z-[90]">
       <p className="leading-snug">{tips[tipIndex]}</p>
     </div>
   );

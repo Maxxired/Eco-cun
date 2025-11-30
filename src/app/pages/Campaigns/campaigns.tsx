@@ -27,29 +27,29 @@ const getRandomBanner = () => {
 // ... (Tus interfaces Campaign y ApiResponse van aquí)
 // ----------------------------------------------------
 interface Campaign {
-    id: number;
-    name: string;
-    description: string;
-    institution: string;
-    township: string;
-    location: string;
-    startDate: string;
-    endDate: string;
-    banner?: string;
-    activities: string;
-    contact: string;
-    active: boolean;
+  id: number;
+  name: string;
+  description: string;
+  institution: string;
+  township: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  banner?: string;
+  activities: string;
+  contact: string;
+  active: boolean;
 }
 
 interface ApiResponse {
-    message: string;
-    statusCode: number;
-    listDataObject: Campaign[];
-    pagination: {
-        page: number;
-        limit: number;
-        totalPages: number;
-    };
+  message: string;
+  statusCode: number;
+  listDataObject: Campaign[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 // ----------------------------------------------------
 
@@ -66,21 +66,21 @@ const Campaigns: React.FC = () => {
     // Si la URL es relativa, le pegamos el host.
     return path.startsWith('http') ? path : `${API_URL}${path}`;
   };
-  
+
   // Función que llama al endpoint de detalles (se mantiene)
   const fetchDetails = async (campaignId: number) => {
     setIsDetailLoading(true);
     try {
-        const response = await fetch(`${API_URL}/api/campaigns/${campaignId}`);
-        if (!response.ok) throw new Error("Error al cargar detalles");
-        const data = await response.json();
-        // Guardamos el objeto completo (que debería incluir todos los campos del modelo)
-        setSelectedCampaign(data.dataObject); 
+      const response = await fetch(`${API_URL}/api/campaigns/${campaignId}`);
+      if (!response.ok) throw new Error("Error al cargar detalles");
+      const data = await response.json();
+      // Guardamos el objeto completo (que debería incluir todos los campos del modelo)
+      setSelectedCampaign(data.dataObject);
     } catch (error) {
-        toast.error("Error al cargar los detalles de la campaña");
-        setSelectedCampaign(null);
+      toast.error("Error al cargar los detalles de la campaña");
+      setSelectedCampaign(null);
     } finally {
-        setIsDetailLoading(false);
+      setIsDetailLoading(false);
     }
   };
 
@@ -88,7 +88,7 @@ const Campaigns: React.FC = () => {
     // Cuando hacen clic, cargamos los detalles completos antes de abrir el modal
     fetchDetails(campaign.id);
   };
-  
+
   const handleCloseModal = () => setSelectedCampaign(null);
 
 
@@ -103,11 +103,11 @@ const Campaigns: React.FC = () => {
         const fullResponse: ApiResponse = await response.json();
 
         if (fullResponse && Array.isArray(fullResponse.listDataObject)) {
-            // 3. La clave es el check 'Array.isArray' aquí, porque el backend
-            // a veces devuelve un array en el nivel superior (si no hay paginación)
-            setCampaigns(fullResponse.listDataObject);
+          // 3. La clave es el check 'Array.isArray' aquí, porque el backend
+          // a veces devuelve un array en el nivel superior (si no hay paginación)
+          setCampaigns(fullResponse.listDataObject);
         } else if (fullResponse && fullResponse.listDataObject) {
-            setCampaigns(fullResponse.listDataObject);
+          setCampaigns(fullResponse.listDataObject);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -131,8 +131,9 @@ const Campaigns: React.FC = () => {
           campaigns.map((campaign) => (
             <CampaignCard
               key={campaign.id}
-              // 4. USAMOS EL HELPER PARA EL FALLBACK DE IMAGEN
-              iconSrc={getFullImageUrl(campaign.banner)} 
+              iconSrc={
+                campaign.banner ? campaign.banner : "/default_campaign_icon.jpg"
+              } //! Imagen por defecto si no hay banner
               altText={campaign.name}
               title={campaign.name}
               institution={campaign.institution}
@@ -148,17 +149,21 @@ const Campaigns: React.FC = () => {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             {/* Botón Cerrar */}
             <button className="modal-close-btn" onClick={handleCloseModal}>✕</button>
-            
+
             {/* Contenido del modal: se ve si está cargando o no */}
             {isDetailLoading ? (
               <div className="flex justify-center items-center h-48 py-5">
-                 <p className="text-gray-500">Cargando detalles...</p>
+                <p className="text-gray-500">Cargando detalles...</p>
               </div>
             ) : (
               <>
                 {/* Imagen Grande */}
                 <img
-                  src={getFullImageUrl(selectedCampaign.banner)}
+                  src={
+                    selectedCampaign.banner
+                      ? selectedCampaign.banner
+                      : "/default_campaign_icon.jpg"
+                  } //! Imagen por defecto si no hay banner
                   alt={selectedCampaign.name}
                   className="modal-header-image"
                 />
