@@ -4,11 +4,10 @@ import styles from "./styles/Map.module.css";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import { useLocation } from "react-router-dom"; 
+import { useLocation } from "react-router-dom";
 
 const API_URL = "http://localhost:5093";
 
@@ -36,9 +35,9 @@ const cancunPosition: [number, number] = [21.1619, -86.8515];
 
 const MapView: React.FC = () => {
   const [reportes, setReportes] = useState<Reporte[]>([]);
-   // Nuevo estado
+  // Nuevo estado
   const location = useLocation();
-  
+
   const targetLat = location.state?.targetLat;
   const targetLng = location.state?.targetLng;
 
@@ -65,7 +64,7 @@ const MapView: React.FC = () => {
           params: { page: 1, limit: 100 },
           headers
         });
-        if(resReports.data?.data) setReportes(resReports.data.data);
+        if (resReports.data?.data) setReportes(resReports.data.data);
 
         // 2. Cargar Centros de Acopio
         // Asegúrate de tener este endpoint en tu backend, si no, solo se mostrarán reportes
@@ -95,18 +94,18 @@ const MapView: React.FC = () => {
         <Marker key={`rep-${r.id}`} position={[r.locLatitude, r.locLongitude]}>
           <Popup>
             <div className="p-1">
-                <h3 className="font-bold text-sm mb-1 text-red-600">Reporte: {r.category}</h3>
-                <p className="text-xs mb-2 text-gray-600">{r.description}</p>
-                {r.imageUrl && (
-                  <img src={getImageUrl(r.imageUrl) || ''} className="rounded-md w-32 h-20 object-cover" />
-                )}
+              <h3 className="font-bold text-sm mb-1 text-red-600">Reporte: {r.category}</h3>
+              <p className="text-xs mb-2 text-gray-600">{r.description}</p>
+              {r.imageUrl && (
+                <img src={getImageUrl(r.imageUrl) || ''} className="rounded-md w-32 h-20 object-cover" />
+              )}
             </div>
           </Popup>
         </Marker>
       ))}
 
       {/* Marcadores de Centros de Acopio (Verdes) */}
-     
+
 
     </MapContainer>
   );

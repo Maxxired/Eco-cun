@@ -24,17 +24,20 @@ const LoginWindow = () => {
     try {
       const response = await api.post("/api/auth/logIn", datosReporte);
       const { message, token } = response.data;
+
       localStorage.setItem("token", token);
+
       const decodedToken = parseJwt(token);
-      const userRole =
-        decodedToken["role"] ||
-        decodedToken[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-        ];
+      const userRole = decodedToken["role"] || decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      localStorage.setItem("role", userRole);
+      const userName = decodedToken["unique_name"];
+      localStorage.setItem("userName", userName);
+
 
       console.log("Login exitoso:", message);
       console.log("Rol detectado:", userRole);
-      localStorage.setItem("role", userRole);
+      console.log(decodedToken);
+
 
       if (userRole === "Admin") {
         navigate("/admin-profile");
