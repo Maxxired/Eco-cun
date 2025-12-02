@@ -53,7 +53,7 @@ function RegisterWindow() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
       {/* Logo */}
-      <img src="/logo_verde.png" alt="Ecocun Logo" className="h-50 mb-1" />
+      <img src="/logo_verde.png" alt="Ecocun Logo" className="h-40 mb-1" />
 
       {/* Formulario */}
       <div className="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
@@ -142,8 +142,7 @@ function RegisterWindow() {
 
             <label htmlFor="privacidad" className="ml-2 text-sm text-gray-700">
               He leído y acepto los{" "}
-              <Link
-              to="/terminos" className="text-green-700 underline">
+              <Link to="/terminos" className="text-green-700 underline">
                 términos de privacidad
               </Link>
             </label>
@@ -164,7 +163,7 @@ function RegisterWindow() {
           reverseOrder={false}
           toastOptions={{
             style: {
-              fontSize: "18px", 
+              fontSize: "18px",
               padding: "20px", // más espacio interno
               borderRadius: "10px",
               margin: "100px",
