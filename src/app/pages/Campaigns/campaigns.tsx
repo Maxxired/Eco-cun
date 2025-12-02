@@ -1,58 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import CampaignCard from '../../Components/CampaignCard/CampaignCard';
-import './campaigns.css';
-import { toast } from 'react-hot-toast';
-import { FaMapMarkerAlt, FaCalendarAlt, FaPhone } from "react-icons/fa"; // Importamos los iconos
-import { Link } from 'react-router-dom'; // Para el link en el modal (si lo quieres)
+import React, { useState, useEffect } from "react";
+import CampaignCard from "../../Components/CampaignCard/CampaignCard";
+import { toast } from "react-hot-toast";
+import { FaMapMarkerAlt, FaCalendarAlt, FaPhone } from "react-icons/fa";
 
 const API_URL = "http://localhost:5093";
 
-// 1. ARREGLO DE IMÁGENES DE REEMPLAZO (FALLBACKS)
-const FALLBACK_BANNERS = [
-  "https://images.unsplash.com/photo-1572978396564-9ae88ac166a9?q=80&w=600", // Botellas
-  "https://images.unsplash.com/photo-1542601906990-b4d3fb7d5763?q=80&w=600", // Plantando árbol
-  "https://images.unsplash.com/photo-1618477461853-5f8dd68aa395?q=80&w=600", // Playa limpia
-  "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=600", // Voluntariado
-  "https://images.unsplash.com/photo-1595278069441-2cf99f8005a9?q=80&w=600", // Icono de reciclaje
+// TUS IMÁGENES LOCALES
+const FALLBACK_IMAGES = [
+  "/Arbol.jpg", "/Basura.jpg", "/Playa.jpg", "/Reciclaje.jpg", 
+  "/Recilaton.jpg", "/Transforma-recolecta.jpg", "/Jornada-verde.jpg", "/PlayaReci.jpg"
 ];
 
-// Helper para tomar una imagen al azar
-const getRandomBanner = () => {
-  const index = Math.floor(Math.random() * FALLBACK_BANNERS.length);
-  return FALLBACK_BANNERS[index];
-};
+interface Campaign { id: number; name: string; description: string; institution: string; township: string; location: string; startDate: string; endDate: string; banner?: string; activities: string; contact: string; active: boolean; }
 
-
-// ----------------------------------------------------
-// ... (Tus interfaces Campaign y ApiResponse van aquí)
-// ----------------------------------------------------
-interface Campaign {
-  id: number;
-  name: string;
-  description: string;
-  institution: string;
-  township: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  banner?: string;
-  activities: string;
-  contact: string;
-  active: boolean;
-}
-
-interface ApiResponse {
-  message: string;
-  statusCode: number;
-  listDataObject: Campaign[];
-  pagination: {
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
-// ----------------------------------------------------
-
+interface ApiResponse { message: string; statusCode: number; listDataObject: Campaign[]; pagination: { page: number; limit: number; totalPages: number; }; }
 
 const Campaigns: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -60,145 +21,116 @@ const Campaigns: React.FC = () => {
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
 
-
-  const getFullImageUrl = (path?: string) => {
-    if (!path) return getRandomBanner(); // 2. Si el banner es nulo, asigna uno aleatorio
-    // Si la URL es relativa, le pegamos el host.
-    return path.startsWith('http') ? path : `${API_URL}${path}`;
+  const getCampaignImage = (campaign: Campaign) => {
+    if (campaign.banner && campaign.banner.length > 5) return campaign.banner.startsWith('http') ? campaign.banner : `${API_URL}${campaign.banner}`;
+    return FALLBACK_IMAGES[campaign.id % FALLBACK_IMAGES.length];
   };
 
-  // Función que llama al endpoint de detalles (se mantiene)
-  const fetchDetails = async (campaignId: number) => {
-    setIsDetailLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/api/campaigns/${campaignId}`);
-      if (!response.ok) throw new Error("Error al cargar detalles");
-      const data = await response.json();
-      // Guardamos el objeto completo (que debería incluir todos los campos del modelo)
-      setSelectedCampaign(data.dataObject);
-    } catch (error) {
-      toast.error("Error al cargar los detalles de la campaña");
-      setSelectedCampaign(null);
-    } finally {
-      setIsDetailLoading(false);
-    }
-  };
+  // 🔥 Bloquear scroll
+  useEffect(() => {
+    if (selectedCampaign) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'unset';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [selectedCampaign]);
 
-  const handleOpenDetails = (campaign: Campaign) => {
-    // Cuando hacen clic, cargamos los detalles completos antes de abrir el modal
-    fetchDetails(campaign.id);
-  };
-
-  const handleCloseModal = () => setSelectedCampaign(null);
-
-
-  // ----------------------
-  // USE EFFECT (Fetch Inicial)
-  // ----------------------
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/campaigns`);
-        if (!response.ok) throw new Error("Error al cargar campañas");
+        const response = await fetch(`${API_URL}/api/campaigns/all`);
+        if (!response.ok) throw new Error("Error");
         const fullResponse: ApiResponse = await response.json();
-
-        if (fullResponse && Array.isArray(fullResponse.listDataObject)) {
-          // 3. La clave es el check 'Array.isArray' aquí, porque el backend
-          // a veces devuelve un array en el nivel superior (si no hay paginación)
-          setCampaigns(fullResponse.listDataObject);
-        } else if (fullResponse && fullResponse.listDataObject) {
-          setCampaigns(fullResponse.listDataObject);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error("Error al cargar las campañas");
-      } finally {
-        setIsLoading(false);
-      }
+        if (Array.isArray(fullResponse)) setCampaigns(fullResponse);
+        else if (fullResponse.listDataObject) setCampaigns(fullResponse.listDataObject);
+      } catch (error) { console.error("Error:", error); } finally { setIsLoading(false); }
     };
-
     fetchCampaigns();
   }, []);
 
-  return (
-    <div className="campaigns-view-container">
-      <h1 className="campaigns-view-title">Campañas Disponibles</h1>
+  const handleOpenDetails = async (campaign: Campaign) => {
+    setIsDetailLoading(true);
+    setSelectedCampaign(campaign); 
+    try {
+      const response = await fetch(`${API_URL}/api/campaigns/${campaign.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.dataObject) setSelectedCampaign(data.dataObject);
+        else if (data.id) setSelectedCampaign(data);
+      }
+    } catch (error) { console.error(error); } finally { setIsDetailLoading(false); }
+  };
 
-      <div className="campaigns-list">
+  return (
+
+    <div className="relative w-full min-h-screen bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff] pb-24 -mt-6 pt-8 px-4">
+      
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-extrabold text-[#1a7f4c] drop-shadow-sm">Campañas Disponibles</h1>
+        <p className="text-sm text-gray-600 mt-1">Iniciativas para un mejor Quintana Roo</p>
+      </div>
+
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl mx-auto">
         {isLoading ? (
-          <p className="loading-message">Cargando campañas...</p>
+          <p className="text-center text-gray-400 w-full col-span-full py-10">Cargando iniciativas...</p>
         ) : (
           campaigns.map((campaign) => (
             <CampaignCard
               key={campaign.id}
-              iconSrc={
-                campaign.banner ? campaign.banner : "/default_campaign_icon.jpg"
-              } //! Imagen por defecto si no hay banner
+              iconSrc={getCampaignImage(campaign)} 
               altText={campaign.name}
               title={campaign.name}
               institution={campaign.institution}
-              onParticipate={() => handleOpenDetails(campaign)} // Abrir el modal cargando detalles
+              onParticipate={() => handleOpenDetails(campaign)}
             />
           ))
         )}
       </div>
 
-      {/* --- VENTANA FLOTANTE (MODAL) --- */}
+      {/* --- MODAL CON ESTILO ANTERIOR (Limpiio y Verde) --- */}
       {selectedCampaign && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center p-4 z-[1000]" onClick={() => setSelectedCampaign(null)}>
+          
+          {/* Tarjeta Modal estilo Home/Ecocun */}
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden relative transform transition-all" onClick={(e) => e.stopPropagation()}>
+            
             {/* Botón Cerrar */}
-            <button className="modal-close-btn" onClick={handleCloseModal}>✕</button>
+            <button className="absolute top-3 right-3 bg-black/40 text-white rounded-full p-1 hover:bg-black/60 z-10 w-8 h-8 transition-colors" onClick={() => setSelectedCampaign(null)}>✕</button>
+            
+            {/* Imagen (Header) */}
+            <div className="h-52 w-full relative">
+                <img src={getCampaignImage(selectedCampaign)} alt={selectedCampaign.name} className="w-full h-full object-cover"/>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
 
-            {/* Contenido del modal: se ve si está cargando o no */}
-            {isDetailLoading ? (
-              <div className="flex justify-center items-center h-48 py-5">
-                <p className="text-gray-500">Cargando detalles...</p>
-              </div>
-            ) : (
-              <>
-                {/* Imagen Grande */}
-                <img
-                  src={
-                    selectedCampaign.banner
-                      ? selectedCampaign.banner
-                      : "/default_campaign_icon.jpg"
-                  } //! Imagen por defecto si no hay banner
-                  alt={selectedCampaign.name}
-                  className="modal-header-image"
-                />
-
-                {/* Cuerpo del Modal */}
-                <div className="modal-body">
-                  <h2 className="text-xl font-bold text-gray-800 mb-1">{selectedCampaign.name}</h2>
-                  <p className="text-sm text-green-600 font-semibold mb-4">{selectedCampaign.institution}</p>
-
-                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                    {selectedCampaign.description}
-                  </p>
-
-                  {/* Detalles Extra */}
-                  <div className="bg-gray-50 p-3 rounded-lg space-y-2">
-                    <div className="modal-info-row">
-                      <FaMapMarkerAlt className="text-green-600" />
-                      <span>{selectedCampaign.township}</span>
-                    </div>
-                    <div className="modal-info-row">
-                      <FaCalendarAlt className="text-green-600" />
-                      <span>{selectedCampaign.startDate.split("T")[0]} - {selectedCampaign.endDate.split("T")[0]}</span>
-                    </div>
-                    <div className="modal-info-row">
-                      <FaPhone className="text-green-600" />
-                      <span>{selectedCampaign.contact}</span>
-                    </div>
-                    <div className="modal-info-row">
-                      <FaPhone className="text-green-600" />
-                      <span>Actividades: {selectedCampaign.activities}</span>
-                    </div>
-                  </div>
+            {/* Contenido */}
+            <div className="p-6 -mt-12 relative">
+                {/* Título Flotante sobre la imagen */}
+                <div className="bg-white p-4 rounded-xl shadow-lg mb-4 text-center">
+                    <h2 className="text-xl font-bold text-gray-800 leading-tight mb-1">{selectedCampaign.name}</h2>
+                    <span className="text-xs font-bold text-[#1a7f4c] uppercase tracking-wide">{selectedCampaign.institution}</span>
                 </div>
-              </>
-            )}
+
+                <p className="text-gray-600 text-sm mb-6 leading-relaxed text-center">
+                    {selectedCampaign.description}
+                </p>
+                
+                {/* Detalles en Grid */}
+                <div className="grid gap-3 text-sm">
+                    <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
+                        <FaMapMarkerAlt className="text-green-600 text-lg shrink-0" />
+                        <span className="font-medium">{selectedCampaign.township}</span>
+                    </div>
+                    <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
+                        <FaCalendarAlt className="text-green-600 text-lg shrink-0" />
+                        <span>{selectedCampaign.startDate?.split("T")[0]} - {selectedCampaign.endDate?.split("T")[0]}</span>
+                    </div>
+                    {selectedCampaign.contact && (
+                        <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
+                            <FaPhone className="text-green-600 text-lg shrink-0" />
+                            <span>{selectedCampaign.contact}</span>
+                        </div>
+                    )}
+                </div>
+            </div>
           </div>
         </div>
       )}

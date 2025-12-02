@@ -41,7 +41,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ iconSrc, altText, title, in
         className="participate-button"
         onClick={onParticipate}
       >
-        Ver Detalles <span className="arrow"> &gt;</span>
+        Ver Detalles 
       </button>
     </div>
   );
