@@ -12,8 +12,9 @@ import { useLocation } from "react-router-dom";
 // 1. Importamos Framer Motion
 import { motion } from "framer-motion";
 import { FaMapMarkedAlt } from "react-icons/fa";
+import LoadingModal from "../../Components/LoadingModal.tsx";
 
-const API_URL = "http://localhost:5093";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Interfaces
 interface Reporte {
@@ -44,19 +45,35 @@ const centerIcon = new L.Icon({
   popupAnchor: [0, -35]
 });
 
-const cancunPosition: [number, number] = [21.1619, -86.8515];
-
 const MapView: React.FC = () => {
   const [reportes, setReportes] = useState<Reporte[]>([]);
-  const [centros, setCentros] = useState<CentroAcopio[]>([]); // Agregué el estado por si lo usas
+  const [centros, setCentros] = useState<CentroAcopio[]>([]);
   const location = useLocation();
+
+  // Posición del usuario (null = todavía no cargada)
+  const [latitud, setLatitud] = useState<number | null>(null);
+  const [longitud, setLongitud] = useState<number | null>(null);
+
+  // Controla cuándo mostrar el modal
+  const [showLocationLoader, setShowLocationLoader] = useState(false);
 
   const targetLat = location.state?.targetLat;
   const targetLng = location.state?.targetLng;
 
+  // Delay de 1 segundo antes de mostrar el modal
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (latitud === null || longitud === null) {
+        setShowLocationLoader(true);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [latitud, longitud]);
+
   const getImageUrl = (path?: string | null) => {
     if (!path) return null;
-    return path.startsWith('http') ? path : `${API_URL}${path}`;
+    return path.startsWith("http") ? path : `${API_URL}${path}`;
   };
 
   useEffect(() => {
@@ -69,36 +86,45 @@ const MapView: React.FC = () => {
 
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-        // 1. Cargar Reportes
         const resReports = await api.get("/api/reports/allreports", {
           params: { page: 1, limit: 100 },
-          headers
+          headers,
         });
-        if (resReports.data?.data) setReportes(resReports.data.data);
 
-        // 2. Cargar Centros de Acopio (Si tienes el endpoint)
-        /* const resCentros = await api.get("/api/CollectionCenters"); 
-        if(resCentros.data) setCentros(resCentros.data);
-        */
+        if (resReports.data?.data) setReportes(resReports.data.data);
 
       } catch (error) {
         console.error(error);
-        // Eliminé el toast de error como pediste implícitamente
       }
     };
+
+    // Obtener ubicación
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (p) => {
+          setLatitud(p.coords.latitude);
+          setLongitud(p.coords.longitude);
+        },
+        () => console.warn("Sin ubicación")
+      );
+    }
 
     fetchData();
   }, []);
 
+  if (latitud === null || longitud === null) {
+    return showLocationLoader ? <LoadingModal /> : null;
+  }
+
+  const actualPosition: [number, number] = [latitud, longitud];
+
   return (
-    // Usamos un contenedor relativo para posicionar el título encima
     <div className="relative w-full h-[calc(100vh-80px)]">
-      
-      {/* --- TÍTULO FLOTANTE CON FRAMER MOTION --- */}
-      <motion.div 
+      {/* --- Título con Framer Motion --- */}
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
@@ -109,34 +135,44 @@ const MapView: React.FC = () => {
             <FaMapMarkedAlt size={20} />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-800 leading-tight">Mapa Ecológico</h1>
+            <h1 className="text-lg font-bold text-gray-800 leading-tight">
+              Mapa Ecológico
+            </h1>
             <p className="text-xs text-gray-500">Explora reportes.</p>
           </div>
         </div>
       </motion.div>
 
-    
       <MapContainer
-        center={targetLat && targetLng ? [targetLat, targetLng] : cancunPosition}
+        center={targetLat && targetLng ? [targetLat, targetLng] : actualPosition}
         zoom={targetLat ? 16 : 12}
-        className={styles.mapContainer} 
+        className={styles.mapContainer}
         key={targetLat ? `${targetLat}-${targetLng}` : "default-map"}
-        style={{ height: "100%", width: "100%", zIndex: 0 }} 
+        style={{ height: "100%", width: "100%", zIndex: 0 }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors'
+          attribution="&copy; OpenStreetMap contributors"
         />
 
         {/* Marcadores de Reportes */}
         {reportes.map((r) => (
-          <Marker key={`rep-${r.id}`} position={[r.locLatitude, r.locLongitude]}>
+          <Marker
+            key={`rep-${r.id}`}
+            position={[r.locLatitude, r.locLongitude]}
+          >
             <Popup>
               <div className="p-1">
-                <h3 className="font-bold text-sm mb-1 text-red-600">Reporte: {r.category}</h3>
+                <h3 className="font-bold text-sm mb-1 text-red-600">
+                  Reporte: {r.category}
+                </h3>
                 <p className="text-xs mb-2 text-gray-600">{r.description}</p>
                 {r.imageUrl && (
-                  <img src={getImageUrl(r.imageUrl) || ''} className="rounded-md w-32 h-20 object-cover" alt="Evidencia" />
+                  <img
+                    src={getImageUrl(r.imageUrl) || ""}
+                    className="rounded-md w-32 h-20 object-cover"
+                    alt="Evidencia"
+                  />
                 )}
               </div>
             </Popup>
@@ -145,14 +181,24 @@ const MapView: React.FC = () => {
 
         {/* Marcadores de Centros de Acopio */}
         {centros.map((c) => (
-          <Marker key={`center-${c.id}`} position={[c.latitude, c.longitude]} icon={centerIcon}>
+          <Marker
+            key={`center-${c.id}`}
+            position={[c.latitude, c.longitude]}
+            icon={centerIcon}
+          >
             <Popup>
               <div className="p-1">
-                  <h3 className="font-bold text-sm mb-1 text-green-700">{c.name}</h3>
-                  <p className="text-xs text-gray-500">{c.address}</p>
-                  <p className="text-xs font-semibold mt-1">Materiales:</p>
-                  <p className="text-xs text-gray-600">{c.acceptedMaterials.join(", ")}</p>
-                  <p className="text-xs mt-1 text-blue-600">{c.openingTime} - {c.closingTime}</p>
+                <h3 className="font-bold text-sm mb-1 text-green-700">
+                  {c.name}
+                </h3>
+                <p className="text-xs text-gray-500">{c.address}</p>
+                <p className="text-xs font-semibold mt-1">Materiales:</p>
+                <p className="text-xs text-gray-600">
+                  {c.acceptedMaterials.join(", ")}
+                </p>
+                <p className="text-xs mt-1 text-blue-600">
+                  {c.openingTime} - {c.closingTime}
+                </p>
               </div>
             </Popup>
           </Marker>
@@ -161,5 +207,6 @@ const MapView: React.FC = () => {
     </div>
   );
 };
+
 
 export default MapView;

@@ -25,7 +25,7 @@ const OptionsView: React.FC = () => {
           <div className="bg-[#228B4B] rounded-full p-4 w-20 h-20 flex items-center justify-center mb-3">
             <FaUser className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-2xl font-semibold text-gray-800">Hola, Usuario</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">Hola, {localStorage.getItem("userName")}</h2>
         </div>
 
         {/* Menú Mis Reportes */}

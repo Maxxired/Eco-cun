@@ -3,7 +3,7 @@ import CampaignCard from "../../Components/CampaignCard/CampaignCard";
 import { toast } from "react-hot-toast";
 import { FaMapMarkerAlt, FaCalendarAlt, FaPhone } from "react-icons/fa";
 
-const API_URL = "http://localhost:5093";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // TUS IMÁGENES LOCALES
 const FALLBACK_IMAGES = [
@@ -68,7 +68,7 @@ const Campaigns: React.FC = () => {
         <p className="text-sm text-gray-600 mt-1">Iniciativas para un mejor Quintana Roo</p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl mx-auto">
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl mx-auto justify-items-center">
         {isLoading ? (
           <p className="text-center text-gray-400 w-full col-span-full py-10">Cargando iniciativas...</p>
         ) : (

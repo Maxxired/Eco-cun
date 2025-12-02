@@ -3,8 +3,9 @@ import { FaArrowLeft, FaTimes, FaImage, FaMapMarkedAlt } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import ReportCard, { ReportCardProps } from '../../Components/ReportCard/ReportCard';
 import { mapCategoryToString, mapStatusToString } from '../../utils/enumTranslators';
+const API_URL = import.meta.env.VITE_API_URL;
 
-const API_URL = "http://localhost:5093"; 
+
 interface ReportFromApi { id: number; userId: number; locLatitude: number; locLongitude: number; description: string; category: number | string; status: number | string; createdAt: string; imageUrl?: string; }
 
 const AdminReportsView: React.FC = () => {
