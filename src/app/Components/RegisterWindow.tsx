@@ -3,6 +3,8 @@ import { api } from "../API/api.ts";
 import { Link, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
+import {FaRegEyeSlash} from "react-icons/fa";
+import {IoEyeSharp} from "react-icons/io5";
 
 function RegisterWindow() {
   const [nombre, setNombre] = useState("");
@@ -10,6 +12,7 @@ function RegisterWindow() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [aceptaPrivacidad, setAceptaPrivacidad] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -113,23 +116,34 @@ function RegisterWindow() {
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
             />
           </div>
-
+          
           <div>
             <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+                htmlFor="Password"
+                className="block text-sm font-medium text-gray-700"
             >
-              Contraseña:
+              Contraseña
             </label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Escribir contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
-            />
+
+            <div className="mt-1 relative">
+              <input
+                  type={showPassword ? "text" : "password"}
+                  id="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full px-4 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 outline-none"
+              />
+
+              <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 hover:text-green-700"
+              >
+                {showPassword ? <FaRegEyeSlash size={20} /> : <IoEyeSharp size={20} />}
+              </button>
+            </div>
           </div>
+
 
           <div className="flex items-center">
             <input
