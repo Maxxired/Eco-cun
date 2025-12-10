@@ -3,8 +3,8 @@ import { FaMapMarkedAlt, FaTimes, FaImage } from 'react-icons/fa';
 import ReportCard, { ReportCardProps } from '../../Components/ReportCard/ReportCard';
 import { mapCategoryToString, mapStatusToString } from '../../utils/enumTranslators';
 import { useNavigate } from 'react-router-dom';
+const API_URL = import.meta.env.VITE_API_URL;
 
-const API_URL = "http://localhost:5093"; 
 const monkeyLogo = "/monkeydev_logo_blanco_slogan.png";
 
 interface ReportFromApi { id: number; userId: number; locLatitude: number; locLongitude: number; description: string; category: number | string; status: number | string; createdAt: string; imageUrl?: string; }

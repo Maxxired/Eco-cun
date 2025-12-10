@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../API/api.ts";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import PlsLogIn from "./PlsLogIn.tsx";
 
 function EcoaportaForm() {
   const [comentarios, setComentarios] = useState("");
@@ -9,6 +10,7 @@ function EcoaportaForm() {
   const [latitud, setLatitud] = useState("0");
   const [foto, setFoto] = useState<string | null>(null);
   const [tipoDesecho, setTipoDesecho] = useState("Basurero clandestino");
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,9 +19,8 @@ function EcoaportaForm() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      toast.error("Debes iniciar sesión.");
-      navigate("/opciones");
-      return;
+        toast.error("Debes iniciar sesión.");
+        setShowAuthModal(true);
     }
 
     navigator.mediaDevices
@@ -93,6 +94,10 @@ function EcoaportaForm() {
       toast.error("Error al enviar reporte.");
     }
   };
+
+  if (showAuthModal) {
+    return <PlsLogIn />
+  }
 
   return (
     <form
