@@ -51,6 +51,7 @@ const LoginWindow = () => {
             }
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
+            console.log("API BASE URL:", import.meta.env.VITE_API_URL);
             alert("Credenciales incorrectas o error en el servidor.");
         }
     };
