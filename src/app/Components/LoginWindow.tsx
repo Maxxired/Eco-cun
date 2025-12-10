@@ -3,6 +3,7 @@ import {api} from "../API/api.ts";
 import {Link, useNavigate} from "react-router-dom";
 import {FaRegEyeSlash} from "react-icons/fa";
 import {IoEyeSharp} from "react-icons/io5";
+import toast from "react-hot-toast";
 
 const parseJwt = (token: string) => {
     try {
@@ -15,43 +16,56 @@ const parseJwt = (token: string) => {
 const LoginWindow = () => {
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false); // 👈 nuevo estado
+    const [showPassword, setShowPassword] = useState(false);
+    const [Loading, setLoading] = useState(false);
 
 
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
 
-        const datosReporte = {Email, Password};
+        const datosReporte = { Email, Password };
 
         try {
             const response = await api.post("/api/auth/logIn", datosReporte);
-            const {message, token} = response.data;
+            const { message, token } = response.data;
 
             localStorage.setItem("token", token);
 
             const decodedToken = parseJwt(token);
-            const userRole = decodedToken["role"] || decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            const userRole =
+                decodedToken["role"] ||
+                decodedToken[
+                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+                    ];
             localStorage.setItem("role", userRole);
             const userName = decodedToken["unique_name"];
             localStorage.setItem("userName", userName);
 
-
             console.log("Login exitoso:", message);
-            console.log(decodedToken);
 
+            // 👉 Toast de éxito
+            toast.success("Inicio de sesión exitoso 🎉");
 
-            if (userRole === "Admin") {
-                navigate("/admin-profile");
-            } else {
-                navigate("/");
-            }
+            // Redirección con un pequeño delay
+            setTimeout(() => {
+                if (userRole === "Admin") {
+                    navigate("/admin-profile");
+                } else {
+                    navigate("/");
+                }
+            }, 600);
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
-            alert("Credenciales incorrectas o error en el servidor.");
+
+            toast.error("Credenciales incorrectas o error en el servidor.");
+        } finally {
+            setLoading(false);
         }
     };
+
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
@@ -107,9 +121,10 @@ const LoginWindow = () => {
 
                     <button
                         type="submit"
+                        disabled={Loading}
                         className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors font-medium"
                     >
-                        Comenzar
+                        {Loading ? "Cargando..." : "Comenzar"}
                     </button>
                 </form>
 

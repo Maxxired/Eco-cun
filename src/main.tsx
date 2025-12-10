@@ -4,6 +4,7 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./app/router/AppRoutes";
 import ScrollToTop from "./app/Components/ScrollToTop.tsx";
+import PWABadge from "./app/pwa/PWABadge.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -11,5 +12,6 @@ createRoot(document.getElementById("root")!).render(
         <ScrollToTop/>
       <AppRoutes />
     </BrowserRouter>
+      <PWABadge/>
   </StrictMode>
 );

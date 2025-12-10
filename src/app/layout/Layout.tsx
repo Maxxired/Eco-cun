@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import PWABadge from "../pwa/PWABadge";
 import "../Components/NavBar";
 import NavBar from "../Components/NavBar";
 import BottomNavBar from "../Components/BottomNavBar";
@@ -45,7 +44,6 @@ export default function Layout() {
       <footer className="border-t border-[#848484] bg-white py-3 text-sm text-center text-black">
         <BottomNavBar/>
       </footer>
-      <PWABadge />
     </div>
   );
 }
