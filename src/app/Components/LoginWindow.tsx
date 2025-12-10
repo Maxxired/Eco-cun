@@ -40,6 +40,7 @@ const LoginWindow = () => {
 
             console.log("Login exitoso:", message);
             console.log("Rol detectado:", userRole);
+            console.log("API BASE URL:", import.meta.env.VITE_API_URL);
             console.log(decodedToken);
 
 
