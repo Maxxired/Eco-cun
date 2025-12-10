@@ -1,224 +1,192 @@
-import { useEffect, useRef, useState } from "react";
-import { api } from "../API/api.ts";
+import {useEffect, useRef, useState} from "react";
+import {api} from "../API/api.ts";
+import toast from "react-hot-toast";
+import {useNavigate} from "react-router-dom";
+import PlsLogIn from "./PlsLogIn.tsx";
 
 function EcoaportaForm() {
-  const [comentarios, setComentarios] = useState("");
-  const [longitud, setLongitud] = useState("0");
-  const [latitud, setLatitud] = useState("0");
-  const [foto, setFoto] = useState<string | null>(null);
-  const [tipoDesecho, setTipoDesecho] = useState("Basurero clandestino");
+    const [comentarios, setComentarios] = useState("");
+    const [longitud, setLongitud] = useState("0");
+    const [latitud, setLatitud] = useState("0");
+    const [foto, setFoto] = useState<string | null>(null);
+    const [tipoDesecho, setTipoDesecho] = useState("Basurero clandestino");
+    const [showAuthModal, setShowAuthModal] = useState(false);
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    // Activar cámara trasera
-    navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "environment" } })
-      .then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Debes iniciar sesión.");
+            setShowAuthModal(true);
         }
-      })
-      .catch((err) => {
-        console.error("Error al acceder a la cámara:", err);
-      });
 
-    // Obtener ubicación
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitud(position.coords.latitude.toString());
-          setLongitud(position.coords.longitude.toString());
-        },
-        (error) => {
-          console.warn("Ubicación no autorizada:", error.message);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
+        navigator.mediaDevices
+            .getUserMedia({video: {facingMode: "environment"}})
+            .then((s) => {
+                if (videoRef.current) videoRef.current.srcObject = s;
+            })
+            .catch((e) => console.error(e));
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (p) => {
+                    setLatitud(p.coords.latitude.toString());
+                    setLongitud(p.coords.longitude.toString());
+                },
+                () => console.warn("Sin ubicación")
+            );
         }
-      );
-    }
-  }, []);
+    }, [navigate]);
 
-  const tomarFoto = () => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (video && canvas) {
-      const ctx = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL("image/png");
-      setFoto(dataUrl);
-    }
-  };
 
-  //Convertir de base64 a Blob para una mejor gestion
-  const base64ToBlob = (base64: string) => {
-    const byteString = atob(base64.split(",")[1]);
-    const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  };
-
-  const getCategoriaId = (tipo: string): number => {
-    switch (tipo) {
-      case "Basurero clandestino":
-        return 0;
-      case "Quema de basura":
-        return 1;
-      case "Drenaje obstruido":
-        return 2;
-      case "Derrame de sustancias peligrosas":
-        return 3;
-      case "Otros":
-        return 4;
-      default:
-        return 0;
-    }
-  };
-
-  //MANDAR A BACK LOS DATOS
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("LocLatitude", latitud);
-    formData.append("LocLongitude", longitud);
-    formData.append("Description", comentarios);
-    formData.append("Category", getCategoriaId(tipoDesecho).toString());
-
-    if (foto) {
-      const blob = base64ToBlob(foto);
-      formData.append("Image", blob, "foto.png");
-    }
-
-    try {
-      const token = localStorage.getItem("token");
-
-      const response = await api.post(
-        "http://localhost:5093/api/Reports",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    const tomarFoto = () => {
+        if (videoRef.current && canvasRef.current) {
+            canvasRef.current.width = videoRef.current.videoWidth;
+            canvasRef.current.height = videoRef.current.videoHeight;
+            canvasRef.current.getContext("2d")?.drawImage(videoRef.current, 0, 0);
+            setFoto(canvasRef.current.toDataURL("image/png"));
         }
-      );
-      console.log("Token usado:", token);
+    };
 
-      console.log("Reporte enviado:", response.data);
-    } catch (error) {
-      console.error("Error al enviar reporte:", error);
+    const getCategoriaId = (t: string) => {
+        const map: any = {
+            "Basurero clandestino": 0,
+            "Quema de basura": 1,
+            "Drenaje obstruido": 2,
+            "Derrame de sustancias peligrosas": 3,
+        };
+        return map[t] ?? 4;
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!foto) {
+            toast.error("Debes tomar una foto como evidencia.");
+            return;
+        }
+        const formData = new FormData();
+        formData.append("LocLatitude", latitud);
+        formData.append("LocLongitude", longitud);
+        formData.append("Description", comentarios);
+        formData.append("Category", getCategoriaId(tipoDesecho).toString());
+
+        if (foto) {
+            // convertir base64 a Blob
+            const byteString = atob(foto.split(",")[1]);
+            const mimeString = foto.split(",")[0].split(":")[1].split(";")[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            const blob = new Blob([ab], {type: mimeString});
+            formData.append("Image", blob, "evidencia.png");
+        }
+
+        try {
+            await api.post("/api/reports/createreport", formData, {
+                headers: {"Content-Type": "multipart/form-data"},
+            });
+            toast.success("Reporte enviado correctamente");
+            setComentarios("");
+            setFoto(null);
+        } catch (error) {
+            console.error(error);
+            toast.error("Error al enviar reporte.");
+        }
+    };
+
+    if (showAuthModal) {
+        return <PlsLogIn/>
     }
 
-    // Limpiar formulario
-    setComentarios("");
-    setFoto(null);
-  };
+    return (
+        <form
+            onSubmit={handleSubmit}
+            className="min-h-screen flex flex-col items-center px-4 py-6 pb-24
+             bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff]">
+            {/* Título estilo anterior */}
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">
+                Realiza tu reporte
+            </h1>
 
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className="min-h-screen flex flex-col items-center justify-center bg-white px-4 py-6 pb-20"
-    >
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">
-        Realiza tu reporte
-      </h1>
+            <div className="text-sm text-gray-600 mb-4">
+                {latitud !== "0" && longitud !== "0" ? (
+                    <>Ubicación detectada: {parseFloat(latitud).toFixed(4)}, {parseFloat(longitud).toFixed(4)}</>
+                ) : (
+                    <>Detectando ubicación...</>
+                )}
+            </div>
 
-      {/* Vista previa de ubicación */}
-      <div className="text-sm text-gray-600 mb-4">
-        Ubicación detectada:{" "}
-        {latitud && longitud ? `${latitud}, ${longitud}` : "Obteniendo..."}
-      </div>
+            {/* Cámara limpia */}
+            <div className="w-full max-w-md mb-4">
+                <video
+                    ref={videoRef}
+                    autoPlay
+                    className="rounded-md shadow-sm w-full border border-gray-200"
+                />
+                <button
+                    type="button"
+                    onClick={tomarFoto}
+                    className="mt-2 w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors"
+                >
+                    Tomar foto
+                </button>
+                <canvas ref={canvasRef} className="hidden"/>
+            </div>
 
-      {/* Cámara */}
-      <div className="w-full max-w-md mb-4">
-        <video
-          ref={videoRef}
-          autoPlay
-          className="rounded-md shadow-md w-full"
-        />
-        <button
-          type="button"
-          onClick={tomarFoto}
-          className="mt-2 w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors"
-        >
-          Tomar foto
-        </button>
-        <canvas ref={canvasRef} className="hidden" />
-      </div>
+            {foto && (
+                <img
+                    src={foto}
+                    alt="Evidencia"
+                    className="w-full max-w-md mb-4 rounded-md shadow-sm border border-gray-200"
+                />
+            )}
 
-      {/* Vista previa de la foto */}
-      {foto && (
-        <div className="w-full max-w-md mb-4">
-          <p className="text-sm text-gray-600 mb-1">Foto capturada:</p>
-          <img
-            src={foto}
-            alt="Captura"
-            className="rounded-md shadow-md w-full"
-          />
-        </div>
-      )}
+            {/* Select estilo clásico */}
+            <div className="w-full max-w-md mb-4">
+                <label className="block text-sm font-medium  text-gray-700 mb-1">
+                    Tipo de desecho
+                </label>
+                <select
+                    value={tipoDesecho}
+                    onChange={(e) => setTipoDesecho(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                >
+                    <option>Basurero clandestino</option>
+                    <option>Quema de basura</option>
+                    <option>Drenaje obstruido</option>
+                    <option>Derrame de sustancias peligrosas</option>
+                    <option>Otros</option>
+                </select>
+            </div>
 
-      {/* Menú de tipo de desecho */}
-      <div className="w-full max-w-md mb-4">
-        <label
-          htmlFor="tipoDesecho"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Tipo de desecho
-        </label>
-        <select
-          id="tipoDesecho"
-          value={tipoDesecho}
-          onChange={(e) => setTipoDesecho(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600"
-        >
-          <option value="Basurero clandestino">Basurero clandestino</option>
-          <option value="Quema de basura">Quema de basura</option>
-          <option value="Drenaje obstruido">Drenaje obstruidos</option>
-          <option value="Derrame de sustancias peligrosas">
-            Derrame de sustancias peligrosas
-          </option>
-          <option value="Otros">Otros</option>
-        </select>
-      </div>
+            {/* Textarea estilo clásico */}
+            <div className="w-full max-w-md mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Comentarios
+                </label>
+                <textarea
+                    rows={4}
+                    value={comentarios}
+                    onChange={(e) => setComentarios(e.target.value)}
+                    placeholder="Datos de relevancia..."
+                    className="w-full px-4 py-2 border bg-white border-gray-300 rounded-md shadow-sm resize-none focus:ring-green-500 focus:border-green-500"
+                />
+            </div>
 
-      {/* Comentarios */}
-      <div className="w-full max-w-md mb-4">
-        <label
-          htmlFor="comentarios"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Comentarios
-        </label>
-        <textarea
-          id="comentarios"
-          rows={4}
-          placeholder="Datos de relevancia para proceder."
-          value={comentarios}
-          onChange={(e) => setComentarios(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 resize-none"
-        />
-      </div>
-
-      {/* Botón Enviar */}
-      <button
-        type="submit"
-        className="w-full max-w-md bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors"
-      >
-        Enviar reporte
-      </button>
-    </form>
-  );
+            <button
+                type="submit"
+                className="w-full max-w-md bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors font-medium"
+            >
+                Enviar reporte
+            </button>
+        </form>
+    );
 }
 
 export default EcoaportaForm;

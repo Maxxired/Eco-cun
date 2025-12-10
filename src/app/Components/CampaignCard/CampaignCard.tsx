@@ -1,24 +1,39 @@
 import React from 'react';
-import './CampaignCard.css'; 
+import './CampaignCard.css';
 
 interface CampaignCardProps {
   iconSrc: string;
   altText: string;
+  title: string;
+  institution: string;
+  onParticipate: () => void; 
 }
 
-const CampaignCard: React.FC<CampaignCardProps> = ({ iconSrc, altText }) => {
+const CampaignCard: React.FC<CampaignCardProps> = ({ iconSrc, altText, title, onParticipate }) => {
+  const backgroundStyle = iconSrc ? { backgroundImage: `url("${iconSrc}")` } : {};
+
   return (
     <div className="campaign-card">
-      <div className="campaign-icon-container">
-        <img src={iconSrc} alt={altText} className="campaign-icon" />
+      {/* IMAGEN DE FONDO */}
+      <div 
+        className="campaign-image-background" 
+        style={backgroundStyle}
+        role="img" 
+        aria-label={altText}
+      >
       </div>
-      <div className="card-dots">
-        <span className="dot active"></span>
-        <span className="dot"></span>
-        <span className="dot"></span>
+
+      {/* TEXTO */}
+      <div className="text-center px-2">
+        <h3 className="text-gray-900 font-bold text-lg leading-tight">{title}</h3>
       </div>
-      <button className="participate-button">
-        Participar <span className="arrow"> &gt;</span>
+
+      {/* BOTÓN */}
+      <button 
+        className="participate-button"
+        onClick={onParticipate}
+      >
+        Ver Detalles
       </button>
     </div>
   );

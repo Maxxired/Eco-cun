@@ -1,47 +1,63 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FaChevronRight } from 'react-icons/fa';
 
-type ReportStatus = 'Nuevo' | 'En proceso' | 'Resueltos';
 export interface ReportCardProps {
-    folio: string;
-    ubicacion: string;
-    caso: string;
-    status: ReportStatus;
+  folio: string;
+  ubicacion: string;
+  caso: string;
+  status: string;
+  description?: string;
+  imageUrl?: string;
+  lat: number;
+  lon: number;
+  onViewDetails?: () => void;
 }
 
-const statusColors: Record<ReportStatus, string> = {
-    'Nuevo': 'bg-red-400 text-white',
-    'En proceso': 'bg-green-500 text-white',
-    'Resueltos': 'bg-indigo-500 text-white',
-};
+const ReportCard: React.FC<ReportCardProps> = ({
+  folio, ubicacion, caso, status, onViewDetails
+}) => {
 
-const ReportCard: React.FC<ReportCardProps> = ({ folio, ubicacion, caso, status }) => {
-    return (
-        <div className="bg-white rounded-lg shadow-md p-4 relative overflow-hidden">
-            <span
-                className={`absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full ${statusColors[status]}`}
-            >
-                {status}
-            </span>
-            <div className="pr-20">
-                <h3 className="font-bold text-lg mb-2">Folio: {folio}</h3>
-                <p className="text-sm text-gray-700">
-                    <span className="font-bold">Ubicacion:</span> {ubicacion}
-                </p>
-                <p className="text-sm text-gray-700">
-                    <span className="font-bold">Caso:</span> {caso}
-                </p>
-            </div>
+  // Colores estilo "Badge" de tu imagen
+  const getStatusColor = (s: string) => {
+    if (s === 'Nuevo') return 'bg-[#F87171]'; // Rojo salmón
+    if (s === 'En proceso') return 'bg-[#4ADE80]'; // Verde claro
+    if (s === 'Resueltos') return 'bg-[#818CF8]'; // Morado suave
+    return 'bg-gray-400';
+  };
 
-            <Link
-                to={`/reportes/${folio}`}
-                className="text-sm text-gray-500 hover:text-gray-700 mt-3 inline-flex items-center gap-1"
-            >
-                Ver detalles <FaChevronRight className="w-3 h-3" />
-            </Link>
-        </div>
-    );
+  return (
+    // FONDO GRIS CLARO y BORDE REDONDEADO
+    <div className="bg-gray-100 rounded-2xl p-5 mb-4 relative shadow-sm">
+
+      {/* Badge Flotante */}
+      <span className={`${getStatusColor(status)} text-white text-xs font-bold px-3 py-1 rounded-full absolute top-5 right-5`}>
+        {status}
+      </span>
+
+      {/* Datos */}
+      <div className="mb-1">
+        <h3 className="text-xl font-bold text-gray-900">Folio: {folio}</h3>
+      </div>
+
+      <div className="text-sm text-gray-800 mb-1">
+        <span className="font-bold">Ubicacion:</span> {ubicacion}
+      </div>
+
+      <div className="text-sm text-gray-800 mb-4">
+        <span className="font-bold">Caso:</span> {caso}
+      </div>
+
+      {/* Link Ver Detalles */}
+      <div className="flex justify-end">
+        <button
+          onClick={onViewDetails}
+          className="text-green-600 font-bold text-sm flex items-center gap-1 hover:underline"
+        >
+          Ver detalles <FaChevronRight className="text-xs" />
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default ReportCard;
