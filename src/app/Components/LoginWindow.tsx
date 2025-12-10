@@ -39,8 +39,6 @@ const LoginWindow = () => {
 
 
             console.log("Login exitoso:", message);
-            console.log("Rol detectado:", userRole);
-            console.log("API BASE URL:", import.meta.env.VITE_API_URL);
             console.log(decodedToken);
 
 
@@ -51,7 +49,6 @@ const LoginWindow = () => {
             }
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
-            console.log("API BASE URL:", import.meta.env.VITE_API_URL);
             alert("Credenciales incorrectas o error en el servidor.");
         }
     };
@@ -91,6 +88,7 @@ const LoginWindow = () => {
                             <input
                                 type={showPassword ? "text" : "password"}
                                 id="Password"
+                                placeholder={"Escribe tu contraseña"}
                                 value={Password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="block w-full px-4 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 outline-none"
