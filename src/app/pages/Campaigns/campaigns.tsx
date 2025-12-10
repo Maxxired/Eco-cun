@@ -60,7 +60,7 @@ const Campaigns: React.FC = () => {
 
   return (
 
-    <div className="relative w-full min-h-screen bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff] pb-24 -mt-6 pt-8 px-4">
+    <div className="relative w-full min-h-screen bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff] pb-24 pt-8 px-4">
       
       <div className="text-center mb-8">
         <h1 className="text-3xl font-extrabold text-[#1a7f4c] drop-shadow-sm">Campañas Disponibles</h1>

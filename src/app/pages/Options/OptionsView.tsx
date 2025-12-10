@@ -17,7 +17,8 @@ const OptionsView: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20 flex flex-col">
+    <div className="min-h-screen flex flex-col  pb-20
+             bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff]">
       <main className="p-4 flex-grow">
         
         {/* Tarjeta de Usuario */}

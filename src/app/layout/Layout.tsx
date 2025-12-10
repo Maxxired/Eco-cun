@@ -13,7 +13,7 @@ export default function Layout() {
       </nav>
       {/* CONTENIDO */}
       <main id="content" className="min-h-[calc(100dvh-3.5rem)]">
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="mx-auto">
           <Outlet />
           <Toaster
             position="bottom-center"
@@ -43,7 +43,7 @@ export default function Layout() {
       </main>
       {/* FOOTER */}
       <footer className="border-t border-[#848484] bg-white py-3 text-sm text-center text-black">
-        <BottomNavBar></BottomNavBar>
+        <BottomNavBar/>
       </footer>
       <PWABadge />
     </div>

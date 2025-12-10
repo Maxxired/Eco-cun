@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { PlantitaAnimada } from "../Components/plantIA";
-import { PlantIABox } from "../Components/PlantIABox";
+import { PlantitaAnimada } from "./plantIA.tsx";
+import { PlantIABox } from "./PlantIABox.tsx";
 
 const HomeView = () => {
   return (
