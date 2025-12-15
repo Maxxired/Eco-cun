@@ -4,28 +4,45 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaPhone } from "react-icons/fa";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// TUS IMÁGENES LOCALES
 const FALLBACK_IMAGES = [
   "/Arbol.jpg", "/Basura.jpg", "/Playa.jpg", "/Reciclaje.jpg", 
   "/Recilaton.jpg", "/Transforma-recolecta.jpg", "/Jornada-verde.jpg", "/PlayaReci.jpg"
 ];
 
-interface Campaign { id: number; name: string; description: string; institution: string; township: string; location: string; startDate: string; endDate: string; banner?: string; activities: string; contact: string; active: boolean; }
+interface Campaign { 
+  id: number; 
+  name: string; 
+  description: string; 
+  institution: string; 
+  township: string; 
+  location: string; 
+  startDate: string; 
+  endDate: string; 
+  banner?: string; 
+  activities: string; 
+  contact: string; 
+  active: boolean; 
+}
 
-interface ApiResponse { message: string; statusCode: number; listDataObject: Campaign[]; pagination: { page: number; limit: number; totalPages: number; }; }
+interface ApiResponse { 
+  message: string; 
+  statusCode: number; 
+  listDataObject: Campaign[]; 
+  pagination: { page: number; limit: number; totalPages: number; }; 
+}
 
 const Campaigns: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const [isParticipating, setIsParticipating] = useState(false);
 
   const getCampaignImage = (campaign: Campaign) => {
     if (campaign.banner && campaign.banner.length > 5) return campaign.banner.startsWith('http') ? campaign.banner : `${API_URL}${campaign.banner}`;
     return FALLBACK_IMAGES[campaign.id % FALLBACK_IMAGES.length];
   };
 
-  // 🔥 Bloquear scroll
   useEffect(() => {
     if (selectedCampaign) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = 'unset';
@@ -58,8 +75,46 @@ const Campaigns: React.FC = () => {
     } catch (error) { console.error(error); } finally { setIsDetailLoading(false); }
   };
 
-  return (
+  const handleParticipate = async () => {
+    if (!selectedCampaign) return;
+    setIsParticipating(true);
 
+    try {
+      const storedUser = localStorage.getItem("user"); 
+      const userId = storedUser ? JSON.parse(storedUser).id : null; 
+
+      if (!userId) {
+        alert("Debes iniciar sesión para participar.");
+        setIsParticipating(false);
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/api/participar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: Number(userId),
+          eventId: selectedCampaign.id,
+          puntos: 10 
+        }),
+      });
+
+      if (response.ok) {
+        alert(`¡Te has unido a "${selectedCampaign.name}" y ganaste 10 puntos!`);
+        setSelectedCampaign(null);
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || "Hubo un problema al intentar unirte.");
+      }
+    } catch (error) {
+      console.error("Error al participar:", error);
+      alert("Error de conexión al servidor.");
+    } finally {
+      setIsParticipating(false);
+    }
+  };
+
+  return (
     <div className="relative w-full min-h-screen bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff] pb-24 pt-8 px-4">
       
       <div className="text-center mb-8">
@@ -84,11 +139,10 @@ const Campaigns: React.FC = () => {
         )}
       </div>
 
-      {/* --- MODAL CON ESTILO ANTERIOR (Limpiio y Verde) --- */}
       {selectedCampaign && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center p-4 z-[1000]" onClick={() => setSelectedCampaign(null)}>
           
-          {/* Tarjeta Modal estilo Home/Ecocun */}
+          {/* Tarjeta Modal estilo */}
           <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden relative transform transition-all" onClick={(e) => e.stopPropagation()}>
             
             {/* Botón Cerrar */}
@@ -107,37 +161,55 @@ const Campaigns: React.FC = () => {
                     <h2 className="text-xl font-bold text-gray-800 leading-tight mb-1">{selectedCampaign.name}</h2>
                     <span className="text-xs font-bold text-[#1a7f4c] uppercase tracking-wide">{selectedCampaign.institution}</span>
                 </div>
+              
               {isDetailLoading ? (
-                  // 🔄 Mientras carga el detalle
+                  //  Mientras carga el detalle
                   <p className="text-gray-400 text-sm mb-6 text-center">
                     Cargando detalles de la campaña...
                   </p>
               ) : (
                   <>
-                  <p className="text-gray-600 text-sm mb-6 leading-relaxed text-center">
-                    {selectedCampaign.description}
-                  </p>
-                <p className="text-gray-600 text-sm mb-6 leading-relaxed text-center">
-                    {selectedCampaign.description}
-                </p>
+                    {/* Descripción corregida (sin duplicar) */}
+                    <p className="text-gray-600 text-sm mb-6 leading-relaxed text-center">
+                      {selectedCampaign.description}
+                    </p>
                 
-                {/* Detalles en Grid */}
-                <div className="grid gap-3 text-sm">
-                    <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
-                        <FaMapMarkerAlt className="text-green-600 text-lg shrink-0" />
-                        <span className="font-medium">{selectedCampaign.township}</span>
-                    </div>
-                    <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
-                        <FaCalendarAlt className="text-green-600 text-lg shrink-0" />
-                        <span>{selectedCampaign.startDate?.split("T")[0]} - {selectedCampaign.endDate?.split("T")[0]}</span>
-                    </div>
-                    {selectedCampaign.contact && (
+                    {/* Detalles en Grid */}
+                    <div className="grid gap-3 text-sm mb-6">
                         <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
-                            <FaPhone className="text-green-600 text-lg shrink-0" />
-                            <span>{selectedCampaign.contact}</span>
+                            <FaMapMarkerAlt className="text-green-600 text-lg shrink-0" />
+                            <span className="font-medium">{selectedCampaign.township}</span>
                         </div>
-                    )}
-                </div>
+                        <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
+                            <FaCalendarAlt className="text-green-600 text-lg shrink-0" />
+                            <span>{selectedCampaign.startDate?.split("T")[0]} - {selectedCampaign.endDate?.split("T")[0]}</span>
+                        </div>
+                        {selectedCampaign.contact && (
+                            <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
+                                <FaPhone className="text-green-600 text-lg shrink-0" />
+                                <span>{selectedCampaign.contact}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/*  BOTÓN DE PARTICIPAR  */}
+                    <button
+                      onClick={handleParticipate}
+                      disabled={isParticipating}
+                      className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-all transform active:scale-95 flex justify-center items-center gap-2 ${
+                        isParticipating 
+                          ? "bg-gray-400 cursor-not-allowed" 
+                          : "bg-[#1a7f4c] hover:bg-[#146c3e] hover:shadow-lg"
+                      }`}
+                    >
+                      {isParticipating ? (
+                        <>
+                           <span>Procesando...</span>
+                        </>
+                      ) : (
+                        "Participar"
+                      )}
+                    </button>
                   </>
               )}
             </div>

@@ -9,7 +9,6 @@ const AdminProfileView: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    // Redirige a /iniciar_sesion como pediste
     navigate("/iniciar_sesion"); 
   };
 
@@ -17,7 +16,7 @@ const AdminProfileView: React.FC = () => {
     <div className="min-h-screen bg-gray-100 pb-20 flex flex-col">
       <main className="p-4 flex-grow">
         
-        {/* Tarjeta de Perfil (Diseño original) */}
+        {/* Tarjeta de Perfil  */}
         <div className="bg-green-100 rounded-xl p-6 flex flex-col items-center justify-center mb-6 shadow-sm mt-4 border border-green-200">
           <div className="bg-green-600 rounded-full p-4 w-20 h-20 flex items-center justify-center mb-3 text-white">
             <FaUserCog size={40} />
