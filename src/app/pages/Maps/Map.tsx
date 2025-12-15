@@ -1,7 +1,6 @@
 import {api} from "../../API/api.ts";
 import "leaflet/dist/leaflet.css";
 // Asegúrate de que este archivo CSS tenga height: 100% o una altura fija
-<<<<<<< HEAD
 import styles from "./styles/Map.module.css";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
@@ -14,19 +13,6 @@ import {useLocation} from "react-router-dom";
 import {motion} from "framer-motion";
 import {FaMapMarkedAlt} from "react-icons/fa";
 import LoadingModal from "../../Components/LoadingModal.tsx";
-=======
-import styles from "./styles/Map.module.css"; 
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
-import { useLocation } from "react-router-dom";
-// 1. Importamos Framer Motion
-import { motion } from "framer-motion";
-import { FaMapMarkedAlt } from "react-icons/fa";
->>>>>>> 8ac655cc8d16a0ad36f9e07a4aaf1a4bde7f6837
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -41,7 +27,6 @@ interface Reporte {
 }
 
 interface CentroAcopio {
-<<<<<<< HEAD
     id: number;
     name: string;
     latitude: number;
@@ -50,47 +35,21 @@ interface CentroAcopio {
     address: string;
     openingTime: string;
     closingTime: string;
-=======
-  id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
-  acceptedMaterials: string[];
-  address: string;
-  openingTime: string;
-  closingTime: string;
->>>>>>> 8ac655cc8d16a0ad36f9e07a4aaf1a4bde7f6837
 }
 
 // Icono para Centros de Acopio (Verde)
 const centerIcon = new L.Icon({
-<<<<<<< HEAD
     iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
     iconSize: [35, 35],
     iconAnchor: [17, 35],
     popupAnchor: [0, -35]
-=======
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', 
-  iconSize: [35, 35],
-  iconAnchor: [17, 35],
-  popupAnchor: [0, -35]
->>>>>>> 8ac655cc8d16a0ad36f9e07a4aaf1a4bde7f6837
 });
 
 const MapView: React.FC = () => {
-<<<<<<< HEAD
     const [reportes, setReportes] = useState<Reporte[]>([]);
     const [centros] = useState<CentroAcopio[]>([]);
 //  const [centros, setCentros] = useState<CentroAcopio[]>([]);
     const location = useLocation();
-=======
-  const [reportes, setReportes] = useState<Reporte[]>([]);
-  const [centros, setCentros] = useState<CentroAcopio[]>([]); // Agregué el estado por si lo usas
-  const location = useLocation();
-
-  const targetLat = location.state?.targetLat;
-  const targetLng = location.state?.targetLng;
->>>>>>> 8ac655cc8d16a0ad36f9e07a4aaf1a4bde7f6837
 
     // Posición del usuario (null = todavía no cargada)
     const [latitud, setLatitud] = useState<number | null>(null);

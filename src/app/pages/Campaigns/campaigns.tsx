@@ -49,11 +49,6 @@ const Campaigns: React.FC = () => {
     return () => { document.body.style.overflow = 'unset'; };
   }, [selectedCampaign]);
 
-  const getCampaignImage = (campaign: Campaign) => {
-    if (campaign.banner && campaign.banner.length > 5) return campaign.banner.startsWith('http') ? campaign.banner : `${API_URL}${campaign.banner}`;
-    return FALLBACK_IMAGES[campaign.id % FALLBACK_IMAGES.length];
-  };
-
   useEffect(() => {
     if (selectedCampaign) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = 'unset';
