@@ -1,8 +1,9 @@
-import {useEffect, useRef, useState} from "react";
-import {api} from "../API/api.ts";
+import { useEffect, useRef, useState } from "react";
+import { api } from "../API/api.ts";
 import toast from "react-hot-toast";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PlsLogIn from "./PlsLogIn.tsx";
+import { FaInfoCircle } from "react-icons/fa"; 
 
 function EcoaportaForm() {
     const [comentarios, setComentarios] = useState("");
@@ -11,6 +12,7 @@ function EcoaportaForm() {
     const [foto, setFoto] = useState<string | null>(null);
     const [tipoDesecho, setTipoDesecho] = useState("Basurero clandestino");
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false); 
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,7 +26,7 @@ function EcoaportaForm() {
         }
 
         navigator.mediaDevices
-            .getUserMedia({video: {facingMode: "environment"}})
+            .getUserMedia({ video: { facingMode: "environment" } })
             .then((s) => {
                 if (videoRef.current) videoRef.current.srcObject = s;
             })
@@ -40,7 +42,6 @@ function EcoaportaForm() {
             );
         }
     }, [navigate]);
-
 
     const tomarFoto = () => {
         if (videoRef.current && canvasRef.current) {
@@ -68,6 +69,9 @@ function EcoaportaForm() {
             toast.error("Debes tomar una foto como evidencia.");
             return;
         }
+
+        setIsSubmitting(true); 
+
         const formData = new FormData();
         formData.append("LocLatitude", latitud);
         formData.append("LocLongitude", longitud);
@@ -75,7 +79,6 @@ function EcoaportaForm() {
         formData.append("Category", getCategoriaId(tipoDesecho).toString());
 
         if (foto) {
-            // convertir base64 a Blob
             const byteString = atob(foto.split(",")[1]);
             const mimeString = foto.split(",")[0].split(":")[1].split(";")[0];
             const ab = new ArrayBuffer(byteString.length);
@@ -83,36 +86,60 @@ function EcoaportaForm() {
             for (let i = 0; i < byteString.length; i++) {
                 ia[i] = byteString.charCodeAt(i);
             }
-            const blob = new Blob([ab], {type: mimeString});
+            const blob = new Blob([ab], { type: mimeString });
             formData.append("Image", blob, "evidencia.png");
         }
 
-        try {
+        try {         
             await api.post("/api/reports/createreport", formData, {
-                headers: {"Content-Type": "multipart/form-data"},
+                headers: { "Content-Type": "multipart/form-data" },
             });
-            toast.success("Reporte enviado correctamente");
+            
+            toast.success("¡Reporte enviado! Tus puntos y monedas se acreditarán tras la revisión.");
+            
             setComentarios("");
             setFoto(null);
         } catch (error) {
             console.error(error);
             toast.error("Error al enviar reporte.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     if (showAuthModal) {
-        return <PlsLogIn/>
+        return <PlsLogIn />
     }
 
     return (
         <form
             onSubmit={handleSubmit}
             className="min-h-screen flex flex-col items-center px-4 py-6 pb-24
-             bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff]">
-            {/* Título estilo anterior */}
+             bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff]"
+        >
             <h1 className="text-2xl font-bold text-gray-800 mb-4">
                 Realiza tu reporte
             </h1>
+
+            {/* ---  MENSAJE DE REVISIÓN Y RECOMPENSAS --- */}
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 w-full max-w-md rounded-r-md shadow-sm">
+                <div className="flex">
+                    <div className="flex-shrink-0">
+                        <FaInfoCircle className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <div className="ml-3">
+                        <h3 className="text-sm font-bold text-blue-800">Estado: Pendiente de Revisión</h3>
+                        <div className="mt-1 text-xs text-blue-700">
+                            <p>Tu reporte será validado por nuestros moderadores.</p>
+                            <div className="mt-2 flex items-center gap-2 font-semibold bg-white/50 p-2 rounded w-fit">
+                                <span>🎁 Recompensa:</span>
+                                <span className="text-green-700">+20 Puntos</span>
+                                <span className="text-yellow-600">+5 Ecomonedas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div className="text-sm text-gray-600 mb-4">
                 {latitud !== "0" && longitud !== "0" ? (
@@ -122,7 +149,7 @@ function EcoaportaForm() {
                 )}
             </div>
 
-            {/* Cámara limpia */}
+            {/* Cámara */}
             <div className="w-full max-w-md mb-4">
                 <video
                     ref={videoRef}
@@ -136,7 +163,7 @@ function EcoaportaForm() {
                 >
                     Tomar foto
                 </button>
-                <canvas ref={canvasRef} className="hidden"/>
+                <canvas ref={canvasRef} className="hidden" />
             </div>
 
             {foto && (
@@ -147,9 +174,9 @@ function EcoaportaForm() {
                 />
             )}
 
-            {/* Select estilo clásico */}
+            {/* Select Tipo de Desecho */}
             <div className="w-full max-w-md mb-4">
-                <label className="block text-sm font-medium  text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tipo de desecho
                 </label>
                 <select
@@ -165,7 +192,7 @@ function EcoaportaForm() {
                 </select>
             </div>
 
-            {/* Textarea estilo clásico */}
+            {/* Textarea Comentarios */}
             <div className="w-full max-w-md mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                     Comentarios
@@ -181,9 +208,12 @@ function EcoaportaForm() {
 
             <button
                 type="submit"
-                className="w-full max-w-md bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors font-medium"
+                disabled={isSubmitting}
+                className={`w-full max-w-md text-white py-3 rounded-md transition-colors font-medium ${
+                    isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-green-700 hover:bg-green-800"
+                }`}
             >
-                Enviar reporte
+                {isSubmitting ? "Enviando..." : "Enviar reporte"}
             </button>
         </form>
     );

@@ -22,23 +22,6 @@ const NavBar = () => {
           <li><Link to="/campaings" className="block px-3 py-2 hover:bg-white/10 rounded-lg transition-all">Campañas</Link></li>
           <li><Link to="/opciones" className="block px-3 py-2 hover:bg-white/10 rounded-lg transition-all">Opciones</Link></li>
         </ul>
-
-
-        <div className="flex items-center">
-          <Link 
-            to={profileDestination}
-            className="transition-transform hover:scale-110"
-            title="Ir al perfil"
-          >
-            <img 
-                src="/profile_icon.svg" 
-                alt="Perfil" 
-                className="w-10 h-10"
-                style={{ filter: "brightness(0) invert(1)" }} 
-            />
-          </Link>
-        </div>
-
       </div>
     </nav>
   );

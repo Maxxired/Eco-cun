@@ -1,35 +1,16 @@
 import React, { useState, useEffect } from "react";
 import CampaignCard from "../../Components/CampaignCard/CampaignCard";
-import { FaMapMarkerAlt, FaCalendarAlt, FaPhone } from "react-icons/fa";
+import { FaMapMarkerAlt, FaCalendarAlt, FaPhone, FaCoins } from "react-icons/fa"; // Importamos icono de monedas
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const FALLBACK_IMAGES = [
-  "/Arbol.jpg", "/Basura.jpg", "/Playa.jpg", "/Reciclaje.jpg",
+  "/Arbol.jpg", "/Basura.jpg", "/Playa.jpg", "/Reciclaje.jpg", 
   "/Recilaton.jpg", "/Transforma-recolecta.jpg", "/Jornada-verde.jpg", "/PlayaReci.jpg"
 ];
 
-interface Campaign {
-  id: number;
-  name: string;
-  description: string;
-  institution: string;
-  township: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  banner?: string;
-  activities: string;
-  contact: string;
-  active: boolean;
-}
-
-interface ApiResponse {
-  message: string;
-  statusCode: number;
-  listDataObject: Campaign[];
-  pagination: { page: number; limit: number; totalPages: number; };
-}
+interface Campaign { id: number; name: string; description: string; institution: string; township: string; location: string; startDate: string; endDate: string; banner?: string; activities: string; contact: string; active: boolean; }
+interface ApiResponse { message: string; statusCode: number; listDataObject: Campaign[]; pagination: { page: number; limit: number; totalPages: number; }; }
 
 const Campaigns: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -38,16 +19,11 @@ const Campaigns: React.FC = () => {
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [isParticipating, setIsParticipating] = useState(false);
 
+ 
   const getCampaignImage = (campaign: Campaign) => {
     if (campaign.banner && campaign.banner.length > 5) return campaign.banner.startsWith('http') ? campaign.banner : `${API_URL}${campaign.banner}`;
     return FALLBACK_IMAGES[campaign.id % FALLBACK_IMAGES.length];
   };
-
-  useEffect(() => {
-    if (selectedCampaign) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = 'unset';
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [selectedCampaign]);
 
   useEffect(() => {
     if (selectedCampaign) document.body.style.overflow = 'hidden';
@@ -70,7 +46,7 @@ const Campaigns: React.FC = () => {
 
   const handleOpenDetails = async (campaign: Campaign) => {
     setIsDetailLoading(true);
-    setSelectedCampaign(campaign);
+    setSelectedCampaign(campaign); 
     try {
       const response = await fetch(`${API_URL}/api/campaigns/${campaign.id}`);
       if (response.ok) {
@@ -86,8 +62,9 @@ const Campaigns: React.FC = () => {
     setIsParticipating(true);
 
     try {
-      const storedUser = localStorage.getItem("user");
-      const userId = storedUser ? JSON.parse(storedUser).id : null;
+      // BACKEND: Obtener ID real del usuario (Context o LocalStorage)
+      const storedUser = localStorage.getItem("user"); 
+      const userId = storedUser ? JSON.parse(storedUser).id : null; 
 
       if (!userId) {
         alert("Debes iniciar sesión para participar.");
@@ -101,12 +78,14 @@ const Campaigns: React.FC = () => {
         body: JSON.stringify({
           userId: Number(userId),
           eventId: selectedCampaign.id,
-          puntos: 10
+          puntos: 10,      // Recompensa en Puntos
+          ecomonedas: 5    // Recompensa en Ecomonedas 
         }),
       });
 
       if (response.ok) {
-        alert(`¡Te has unido a "${selectedCampaign.name}" y ganaste 10 puntos!`);
+        // UI: Feedback visual de ambas recompensas
+        alert(`¡Te has unido! Ganaste:\n✨ 10 Puntos\n🪙 5 Ecomonedas`);
         setSelectedCampaign(null);
       } else {
         const errorData = await response.json();
@@ -122,7 +101,7 @@ const Campaigns: React.FC = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-gradient-to-br from-[#ffffff] via-[#d1eddf] to-[#ffffff] pb-24 pt-8 px-4">
-
+      {/* ... Header y Grid de campañas iguales ... */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-extrabold text-[#1a7f4c] drop-shadow-sm">Campañas Disponibles</h1>
         <p className="text-sm text-gray-600 mt-1">Iniciativas para un mejor Quintana Roo</p>
@@ -135,7 +114,7 @@ const Campaigns: React.FC = () => {
           campaigns.map((campaign) => (
             <CampaignCard
               key={campaign.id}
-              iconSrc={getCampaignImage(campaign)}
+              iconSrc={getCampaignImage(campaign)} 
               altText={campaign.name}
               title={campaign.name}
               institution={campaign.institution}
@@ -147,75 +126,66 @@ const Campaigns: React.FC = () => {
 
       {selectedCampaign && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center p-4 z-[1000]" onClick={() => setSelectedCampaign(null)}>
-
-          {/* Tarjeta Modal estilo */}
           <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden relative transform transition-all" onClick={(e) => e.stopPropagation()}>
-
-            {/* Botón Cerrar */}
             <button className="absolute top-3 right-3 bg-black/40 text-white rounded-full p-1 hover:bg-black/60 z-10 w-8 h-8 transition-colors" onClick={() => setSelectedCampaign(null)}>✕</button>
-
-            {/* Imagen (Header) */}
+            
             <div className="h-52 w-full relative">
-              <img src={getCampaignImage(selectedCampaign)} alt={selectedCampaign.name} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <img src={getCampaignImage(selectedCampaign)} alt={selectedCampaign.name} className="w-full h-full object-cover"/>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             </div>
 
-            {/* Contenido */}
             <div className="p-6 -mt-12 relative">
-              {/* Título Flotante sobre la imagen */}
-              <div className="bg-white p-4 rounded-xl shadow-lg mb-4 text-center">
-                <h2 className="text-xl font-bold text-gray-800 leading-tight mb-1">{selectedCampaign.name}</h2>
-                <span className="text-xs font-bold text-[#1a7f4c] uppercase tracking-wide">{selectedCampaign.institution}</span>
-              </div>
-
+                <div className="bg-white p-4 rounded-xl shadow-lg mb-4 text-center">
+                    <h2 className="text-xl font-bold text-gray-800 leading-tight mb-1">{selectedCampaign.name}</h2>
+                    <span className="text-xs font-bold text-[#1a7f4c] uppercase tracking-wide">{selectedCampaign.institution}</span>
+                </div>
+              
               {isDetailLoading ? (
-                //  Mientras carga el detalle
-                <p className="text-gray-400 text-sm mb-6 text-center">
-                  Cargando detalles de la campaña...
-                </p>
+                  <p className="text-gray-400 text-sm mb-6 text-center">Cargando detalles...</p>
               ) : (
-                <>
-                  {/* Descripción corregida  */}
-                  <p className="text-gray-600 text-sm mb-6 leading-relaxed text-center">
-                    {selectedCampaign.description}
-                  </p>
-
-                  {/* Detalles en Grid */}
-                  <div className="grid gap-3 text-sm mb-6">
-                    <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
-                      <FaMapMarkerAlt className="text-green-600 text-lg shrink-0" />
-                      <span className="font-medium">{selectedCampaign.township}</span>
+                  <>
+                    <p className="text-gray-600 text-sm mb-6 leading-relaxed text-center">{selectedCampaign.description}</p>
+                
+                    <div className="grid gap-3 text-sm mb-6">
+                        <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
+                            <FaMapMarkerAlt className="text-green-600 text-lg shrink-0" />
+                            <span className="font-medium">{selectedCampaign.township}</span>
+                        </div>
+                        <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
+                            <FaCalendarAlt className="text-green-600 text-lg shrink-0" />
+                            <span>{selectedCampaign.startDate?.split("T")[0]} - {selectedCampaign.endDate?.split("T")[0]}</span>
+                        </div>
+                        {selectedCampaign.contact && (
+                            <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
+                                <FaPhone className="text-green-600 text-lg shrink-0" />
+                                <span>{selectedCampaign.contact}</span>
+                            </div>
+                        )}
                     </div>
-                    <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
-                      <FaCalendarAlt className="text-green-600 text-lg shrink-0" />
-                      <span>{selectedCampaign.startDate?.split("T")[0]} - {selectedCampaign.endDate?.split("T")[0]}</span>
-                    </div>
-                    {selectedCampaign.contact && (
-                      <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg text-gray-700">
-                        <FaPhone className="text-green-600 text-lg shrink-0" />
-                        <span>{selectedCampaign.contact}</span>
-                      </div>
-                    )}
-                  </div>
 
-                  {/*  BOTÓN DE PARTICIPAR  */}
-                  <button
-                    onClick={handleParticipate}
-                    disabled={isParticipating}
-                    className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-all transform active:scale-95 flex justify-center items-center gap-2 ${isParticipating
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-[#1a7f4c] hover:bg-[#146c3e] hover:shadow-lg"
+                    {/* BOTÓN CON ECOMONEDAS */}
+                    <button
+                      onClick={handleParticipate}
+                      disabled={isParticipating}
+                      className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-all transform active:scale-95 flex flex-col justify-center items-center gap-1 ${
+                        isParticipating 
+                          ? "bg-gray-400 cursor-not-allowed" 
+                          : "bg-gradient-to-r from-[#1a7f4c] to-[#2ecc71] hover:shadow-lg"
                       }`}
-                  >
-                    {isParticipating ? (
-                      <>
+                    >
+                      {isParticipating ? (
                         <span>Procesando...</span>
-                      </>
-                    ) : (
-                      "Participar"
-                    )}
-                  </button>
-                </>
+                      ) : (
+                        <>
+                          <span className="text-lg">¡Participar ahora!</span>
+                          <div className="flex items-center gap-3 text-xs bg-white/20 px-3 py-1 rounded-full">
+                             <span className="flex items-center gap-1">✨ +10 Pts</span>
+                             <span className="flex items-center gap-1">🪙 +5 Monedas</span>
+                          </div>
+                        </>
+                      )}
+                    </button>
+                  </>
               )}
             </div>
           </div>
@@ -224,5 +194,4 @@ const Campaigns: React.FC = () => {
     </div>
   );
 };
-
 export default Campaigns;

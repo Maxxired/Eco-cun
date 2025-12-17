@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react"; // 1. Agregamos useState y useEffect
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaFileAlt, FaSignOutAlt, FaChevronRight } from "react-icons/fa";
-// 2. Importamos el componente de Gamificación (Asegúrate que la ruta sea correcta)
 import { GamificationSection } from "../../Components/GamificationSection"; 
 
 const monkeyLogo = "/monkeydev_logo_blanco_slogan.png"; 
 
 const OptionsView: React.FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [puntos, setPuntos] = useState(0);
+  const [monedas, setMonedas] = useState(0); 
 
   useEffect(() => {
+    // Simulación de carga de datos 
     setTimeout(() => {
         setPuntos(120); 
+        setMonedas(50); // Simulación: El usuario tiene 50 monedas
     }, 300);
   }, []);
 
@@ -20,7 +22,6 @@ const OptionsView: React.FC = () => {
     localStorage.clear(); 
     navigate("/iniciar_sesion"); 
   };
-
 
   const userName = localStorage.getItem("userName") || "Ciudadano";
 
@@ -39,7 +40,7 @@ const OptionsView: React.FC = () => {
           </div>
         </div>
 
-        <GamificationSection points={puntos} />
+        <GamificationSection points={puntos} coins={monedas} />
 
         {/* Menú Mis Reportes */}
         <div className="bg-white rounded-xl shadow-sm mb-4 overflow-hidden border border-gray-100">
