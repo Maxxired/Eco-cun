@@ -41,8 +41,12 @@ const LoginWindow = () => {
                     "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
                     ];
             localStorage.setItem("role", userRole);
+
             const userName = decodedToken["unique_name"];
             localStorage.setItem("userName", userName);
+
+            const userId = decodedToken["nameid"];
+            localStorage.setItem("userId", userId);
 
             console.log("Login exitoso:", message);
 

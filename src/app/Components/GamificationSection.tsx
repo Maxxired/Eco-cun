@@ -6,7 +6,6 @@ const LEVELS = [
   { 
     id: 1, 
     name: "Semilla Ciudadana", 
-    minPoints: 0, 
     icon: <FaSeedling />, 
     color: "text-green-400",
     bg: "bg-green-100",
@@ -15,7 +14,6 @@ const LEVELS = [
   { 
     id: 2, 
     name: "Guardián Local", 
-    minPoints: 50, 
     icon: <FaTree />, 
     color: "text-green-600",
     bg: "bg-green-200",
@@ -24,7 +22,6 @@ const LEVELS = [
   { 
     id: 3, 
     name: "Héroe de Cancún", 
-    minPoints: 150, 
     icon: <FaMedal />, 
     color: "text-yellow-500",
     bg: "bg-yellow-100",
@@ -33,7 +30,6 @@ const LEVELS = [
   { 
     id: 4, 
     name: "Leyenda Verde", 
-    minPoints: 300, 
     icon: <FaCrown />, 
     color: "text-purple-600",
     bg: "bg-purple-100",
@@ -42,29 +38,18 @@ const LEVELS = [
 ];
 
 interface GamificationProps {
+  level: string;
   points: number;
-  coins?: number; 
+  coins: number; 
+  pointsToNextLevel: number;
 }
 
-export const GamificationSection: React.FC<GamificationProps> = ({ points, coins = 0 }) => {
+export const GamificationSection: React.FC<GamificationProps> = ({ level, points, coins, pointsToNextLevel }) => {
   
-  // Lógica para encontrar el nivel actual
-  const currentLevelIndex = LEVELS.findLastIndex((l) => points >= l.minPoints);
+  const currentLevelIndex = LEVELS.findIndex(lvl => lvl.name === level);
   const currentLevel = LEVELS[currentLevelIndex] || LEVELS[0];
-  
-  // Lógica para el siguiente nivel
-  const nextLevel = LEVELS[currentLevelIndex + 1];
+  const nextLevel = LEVELS[currentLevelIndex + 1] || null;
 
-  // Cálculo de la barra de progreso
-  let progressPercentage = 100; 
-  let pointsToNext = 0;
-
-  if (nextLevel) {
-    const pointsInThisLevel = points - currentLevel.minPoints;
-    const levelRange = nextLevel.minPoints - currentLevel.minPoints;
-    progressPercentage = (pointsInThisLevel / levelRange) * 100;
-    pointsToNext = nextLevel.minPoints - points;
-  }
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-6 mb-6 border border-gray-100 relative overflow-hidden">
@@ -114,7 +99,7 @@ export const GamificationSection: React.FC<GamificationProps> = ({ points, coins
         <div className="flex justify-between text-xs text-gray-500 mb-1">
             <span>Progreso de nivel</span>
             {nextLevel ? (
-                <span>Faltan <strong>{pointsToNext} pts</strong></span>
+                <span>Faltan <strong>{pointsToNextLevel} pts</strong></span>
             ) : (
                 <span className="text-green-600 font-bold">¡Máximo nivel!</span>
             )}
@@ -123,7 +108,7 @@ export const GamificationSection: React.FC<GamificationProps> = ({ points, coins
         <div className="relative w-full h-3 bg-gray-100 rounded-full overflow-hidden">
           <motion.div 
             initial={{ width: 0 }}
-            animate={{ width: `${progressPercentage}%` }}
+            animate={{ width: 50 }} //! Ajusta este valor según el progreso real //!FIX INCOMING
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-[#228B4B] rounded-full shadow-[0_0_10px_rgba(34,139,75,0.4)]"
           />
