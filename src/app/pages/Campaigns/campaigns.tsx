@@ -18,8 +18,6 @@ const Campaigns: React.FC = () => {
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [isParticipating, setIsParticipating] = useState(false);
-
- 
   const getCampaignImage = (campaign: Campaign) => {
     if (campaign.banner && campaign.banner.length > 5) return campaign.banner.startsWith('http') ? campaign.banner : `${API_URL}${campaign.banner}`;
     return FALLBACK_IMAGES[campaign.id % FALLBACK_IMAGES.length];
