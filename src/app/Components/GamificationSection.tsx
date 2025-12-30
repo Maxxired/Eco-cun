@@ -43,13 +43,11 @@ const LEVEL_META = [
 ];
 
 interface GamificationProps {
-  level: string;
   points: number;
   coins: number;
 }
 
 export const GamificationSection: React.FC<GamificationProps> = ({
-  level,
   points,
   coins,
 }) => {

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUser, FaFileAlt, FaSignOutAlt, FaChevronRight } from "react-icons/fa";
+import { FaUser, FaFileAlt, FaSignOutAlt, FaChevronRight, FaUserAlt } from "react-icons/fa";
 import { GamificationSection } from "../../Components/GamificationSection"; 
-import { head } from "framer-motion/client";
 
 const monkeyLogo = "/monkeydev_logo_blanco_slogan.png"; 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -39,15 +38,7 @@ const OptionsView: React.FC = () => {
       }
     };
     fetchGamificationData();
-  }, []);
-
-  // useEffect(() => {
-  //   // Simulación de carga de datos 
-  //   setTimeout(() => {
-  //       setPuntos(puntos); 
-  //       setMonedas(monedas);
-  //   }, 300);
-  // }, []);
+  },);
 
   const handleLogout = () => {
     localStorage.clear(); 
@@ -83,6 +74,17 @@ const OptionsView: React.FC = () => {
                     <FaFileAlt className="w-5 h-5 text-blue-500" />
                   </div>
                   <span className="text-gray-700 font-medium">Mis reportes</span>
+                </div>
+                <FaChevronRight className="w-4 h-4 text-gray-400" />
+              </Link>
+            </li>
+            <li>
+              <Link to="/mis-reportes" className="flex items-center justify-between p-4 w-full text-left border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="bg-blue-50 p-2 rounded-lg">
+                    <FaUserAlt className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <span className="text-gray-700 font-medium">Mi Perfil</span>
                 </div>
                 <FaChevronRight className="w-4 h-4 text-gray-400" />
               </Link>
