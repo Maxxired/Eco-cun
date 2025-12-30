@@ -3,7 +3,6 @@ import { api } from "../API/api.ts";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import PlsLogIn from "./PlsLogIn.tsx";
-import { FaInfoCircle } from "react-icons/fa"; 
 
 function EcoaportaForm() {
     const [comentarios, setComentarios] = useState("");
@@ -120,26 +119,6 @@ function EcoaportaForm() {
             <h1 className="text-2xl font-bold text-gray-800 mb-4">
                 Realiza tu reporte
             </h1>
-
-            {/* ---  MENSAJE DE REVISIÓN Y RECOMPENSAS --- */}
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 w-full max-w-md rounded-r-md shadow-sm">
-                <div className="flex">
-                    <div className="flex-shrink-0">
-                        <FaInfoCircle className="h-5 w-5 text-blue-500" />
-                    </div>
-                    <div className="ml-3">
-                        <h3 className="text-sm font-bold text-blue-800">Estado: Pendiente de Revisión</h3>
-                        <div className="mt-1 text-xs text-blue-700">
-                            <p>Tu reporte será validado por nuestros moderadores.</p>
-                            <div className="mt-2 flex items-center gap-2 font-semibold bg-white/50 p-2 rounded w-fit">
-                                <span>🎁 Recompensa:</span>
-                                <span className="text-green-700">+20 Puntos</span>
-                                <span className="text-yellow-600">+5 Ecomonedas</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div className="text-sm text-gray-600 mb-4">
                 {latitud !== "0" && longitud !== "0" ? (

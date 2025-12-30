@@ -5,6 +5,7 @@ import { HomeRoutes } from "./HomeRoutes.tsx";
 import Layout from "../layout/Layout.tsx";
 import { AuthRoutes } from "./AuthRoutes.tsx";
 import { FunctionRoutes } from "./FunctionRoutes.tsx";
+import ProfileInfo from "../pages/ProfileInfo/ProfileInfo.tsx"; 
 
 const AppRoutes: React.FC = () => {
   const routes: RouteObject[] = [
@@ -14,6 +15,12 @@ const AppRoutes: React.FC = () => {
       children: [...HomeRoutes, ...FunctionRoutes],
     },
     ...AuthRoutes,
+
+    {
+       path: "/profile-info",
+       element: <ProfileInfo />
+    },
+
     {
       path: "not-found",
       element: <NotResults />,
@@ -23,7 +30,7 @@ const AppRoutes: React.FC = () => {
       element: <Navigate to="/not-found" replace />,
     },
   ];
-
+  
   return useRoutes(routes);
 };
 
